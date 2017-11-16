@@ -38,7 +38,6 @@ public class UserController {
         if (user.isSuccess()) {
             session.setAttribute(Const.CURRENT_USER, user.getData());
         }
-        throw new NullPointerException("腾讯大礼包...");
-//        return user;
+        return user;
     }
 }
