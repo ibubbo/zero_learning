@@ -1,7 +1,8 @@
 package net.imain.controller.portal;
 
 import net.imain.common.Const;
-import net.imain.common.ServerResponse;
+import net.imain.enums.UserEnum;
+import net.imain.common.HandlerResult;
 import net.imain.pojo.User;
 import net.imain.service.IUserService;
 import net.imain.vo.UserInfoVo;
@@ -29,9 +30,9 @@ public class UserController {
      */
     @RequestMapping(value = "login.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<UserInfoVo> login(String username,
-                                      String password, HttpSession session) {
-        ServerResponse<UserInfoVo> user = iUserService.login(username, password);
+    public HandlerResult<UserInfoVo> login(String username,
+                                           String password, HttpSession session) {
+        HandlerResult<UserInfoVo> user = iUserService.login(username, password);
         if (user.isSuccess()) {
             session.setAttribute(Const.CURRENT_USER, user.getData());
         }
@@ -43,13 +44,13 @@ public class UserController {
      */
     @RequestMapping(value = "logout.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> logout(HttpSession session) {
+    public HandlerResult<String> logout(HttpSession session) {
         try {
             session.removeAttribute(Const.CURRENT_USER);
         } catch (Exception e) {
-            return ServerResponse.error("服务端异常");
+            return HandlerResult.error("服务端异常");
         }
-        return ServerResponse.success("退出成功");
+        return HandlerResult.success("退出成功");
     }
 
     /**
@@ -57,7 +58,7 @@ public class UserController {
      */
     @RequestMapping(value = "register.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> register(User user) {
+    public HandlerResult<String> register(User user) {
         return iUserService.register(user);
     }
 
@@ -66,7 +67,7 @@ public class UserController {
      */
     @RequestMapping(value = "check_valid.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> checkValid(String str, String type) {
+    public HandlerResult<String> checkValid(String str, String type) {
         return iUserService.checkValid(str, type);
     }
 
@@ -75,12 +76,12 @@ public class UserController {
      */
     @RequestMapping(value = "get_user_info.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<UserInfoVo> getUserInfo(HttpSession session) {
+    public HandlerResult<UserInfoVo> getUserInfo(HttpSession session) {
         UserInfoVo user = (UserInfoVo) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return ServerResponse.error("用户未登录,无法获取当前用户信息");
+            return HandlerResult.error("用户未登录,无法获取当前用户信息");
         }
-        return ServerResponse.success(user);
+        return HandlerResult.success(user);
     }
 
     /**
@@ -88,7 +89,7 @@ public class UserController {
      */
     @RequestMapping(value = "forget_get_question.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> forgetGetQuestion(String username) {
+    public HandlerResult<String> forgetGetQuestion(String username) {
         return iUserService.forgetGetQuestion(username);
     }
 
@@ -97,8 +98,34 @@ public class UserController {
      */
     @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> forgetCheckAnswer(String username,
-                                                    String question, String answer) {
+    public HandlerResult<String> forgetCheckAnswer(String username,
+                                                   String question, String answer) {
         return iUserService.forgetCheckAnswer(username, question, answer);
     }
+
+    /**
+     * 忘记密码中的重置密码
+     */
+    @RequestMapping(value = "forget_reset_password.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult<String> forgetResetPassword(String username,
+                                                     String passwordNew, String forgetToken) {
+
+        return iUserService.forgetResetPassword(username, passwordNew, forgetToken);
+    }
+
+    /**
+     * 登录状态中的重置密码
+     */
+    @RequestMapping(value = "reset_password.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult<String> resetPassword(HttpSession session,
+                                               String passwordOld, String passwordNew) {
+        UserInfoVo user = (UserInfoVo) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return HandlerResult.error(UserEnum.NEED_LOGIN.getMessage());
+        }
+        return iUserService.resetPassword(user, passwordOld, passwordNew);
+    }
+
 }

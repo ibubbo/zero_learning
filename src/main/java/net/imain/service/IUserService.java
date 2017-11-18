@@ -1,6 +1,6 @@
 package net.imain.service;
 
-import net.imain.common.ServerResponse;
+import net.imain.common.HandlerResult;
 import net.imain.pojo.User;
 import net.imain.vo.UserInfoVo;
 
@@ -17,7 +17,7 @@ public interface IUserService {
      * @param password
      * @return
      */
-    ServerResponse<UserInfoVo> login(String username, String password);
+    HandlerResult<UserInfoVo> login(String username, String password);
 
     /**
      * 用户注册
@@ -25,7 +25,7 @@ public interface IUserService {
      * @param user 用户详细信息
      * @return
      */
-    ServerResponse<String> register(User user);
+    HandlerResult<String> register(User user);
 
     /**
      * 校验用户名和邮箱
@@ -34,7 +34,7 @@ public interface IUserService {
      * @param type 校验类型：username/email
      * @return 失败或成功
      */
-    ServerResponse<String> checkValid(String str, String type);
+    HandlerResult<String> checkValid(String str, String type);
 
     /**
      * 根据用户名得到用户密保问题
@@ -42,7 +42,7 @@ public interface IUserService {
      * @param username
      * @return
      */
-    ServerResponse<String> forgetGetQuestion(String username);
+    HandlerResult<String> forgetGetQuestion(String username);
 
     /**
      * 找回密码
@@ -52,6 +52,28 @@ public interface IUserService {
      * @param answer 密保答案
      * @return
      */
-    ServerResponse<String> forgetCheckAnswer(String username,
-                                                    String question, String answer);
+    HandlerResult<String> forgetCheckAnswer(String username,
+                                            String question, String answer);
+
+    /**
+     * 忘记密码的重设密码
+     *
+     * @param username 用户名
+     * @param passwordNew 新密码
+     * @param forgetToken 用户的token
+     * @return
+     */
+    HandlerResult<String> forgetResetPassword(String username,
+                                              String passwordNew, String forgetToken);
+
+    /**
+     * 登录状态的重设密码
+     *
+     * @param user 用户信息
+     * @param passwordOld 用户旧密码
+     * @param passwordNew 用户新密码
+     * @return
+     */
+    HandlerResult<String> resetPassword(UserInfoVo user,
+                                               String passwordOld, String passwordNew);
 }

@@ -1,8 +1,8 @@
 package net.imain.service.impl;
 
 import net.imain.common.Const;
-import net.imain.common.ResponseEnum;
-import net.imain.common.ServerResponse;
+import net.imain.enums.UserEnum;
+import net.imain.common.HandlerResult;
 import net.imain.common.TokenCache;
 import net.imain.dao.UserMapper;
 import net.imain.pojo.User;
@@ -29,17 +29,17 @@ public class IUserServiceImpl implements IUserService {
     private UserMapper userMapper;
 
     @Override
-    public ServerResponse<UserInfoVo> login(String username, String password) {
+    public HandlerResult<UserInfoVo> login(String username, String password) {
         // 校验用户名
         int resultCount = userMapper.checkUserName(username);
         if (resultCount == 0) {
-            return ServerResponse.error("用户名不存在");
+            return HandlerResult.error(UserEnum.USERNAME_NOT_EXIST.getMessage());
         }
         String md5EncodeUtf8 = MD5Util.MD5EncodeUtf8(password);
         // 检查密码是否正确
         User resultUser = userMapper.selectLogin(username, md5EncodeUtf8);
         if (resultUser == null) {
-            return ServerResponse.error("密码不正确");
+            return HandlerResult.error(UserEnum.PASSWORD_ERROR.getMessage());
         }
         // 密码置空
         resultUser.setPassword(StringUtils.EMPTY);
@@ -47,13 +47,13 @@ public class IUserServiceImpl implements IUserService {
         // 数据准备
         UserInfoVo vo = new UserInfoVo();
         BeanUtils.copyProperties(resultUser, vo);
-        return ServerResponse.success("登录成功", vo);
+        return HandlerResult.success(UserEnum.SUCCESS.getMessage(), vo);
     }
 
     @Override
-    public ServerResponse<String> register(User user) {
+    public HandlerResult<String> register(User user) {
         // 校验用户名
-        ServerResponse serverResponse = this.checkValid(user.getUsername(), Const.USERNAME);
+        HandlerResult serverResponse = this.checkValid(user.getUsername(), Const.USERNAME);
         if (!serverResponse.isSuccess()) {
             return serverResponse;
         }
@@ -68,62 +68,117 @@ public class IUserServiceImpl implements IUserService {
         // 判断是否成功添加
         Integer resultSum = userMapper.insert(user);
         if (resultSum == 0) {
-            return ServerResponse.error("注册失败");
+            return HandlerResult.error(UserEnum.REGISTER_ERROR.getMessage());
         }
-        return ServerResponse.success("注册成功");
+        return HandlerResult.success(UserEnum.SUCCESS.getMessage());
     }
 
     @Override
-    public ServerResponse<String> checkValid(String str, String type) {
+    public HandlerResult<String> checkValid(String str, String type) {
         // 数据判空
-        if (!StringUtils.isNotBlank(type)) {
-            return ServerResponse.error(ResponseEnum.ILLEGAL_ARGUMENT.getMessage());
+        if (StringUtils.isBlank(type)) {
+            return HandlerResult.error(UserEnum.ILLEGAL_ARGUMENT.getMessage());
         }
         // 校验 type 是否合法
         if (!Const.USERNAME.equals(type) && !Const.EMAIL.equals(type)) {
-            return ServerResponse.error(ResponseEnum.ILLEGAL_ARGUMENT.getMessage());
+            return HandlerResult.error(UserEnum.ILLEGAL_ARGUMENT.getMessage());
         }
         // 如果是用户名
         if (Const.USERNAME.equals(type)) {
             Integer resultCount = userMapper.checkUserName(str);
             if (resultCount > 0) {
-                return ServerResponse.error("用户名已存在");
+                return HandlerResult.error(UserEnum.USERNAME_EXIST.getMessage());
             }
         }
         // 如果是邮箱
         if (Const.EMAIL.equals(type)) {
             Integer resultCount = userMapper.checkEmail(str);
             if (resultCount > 0) {
-                return ServerResponse.error("邮箱已存在");
+                return HandlerResult.error(UserEnum.EMAIL_EXIST.getMessage());
             }
         }
-        return ServerResponse.success("校验成功");
+        return HandlerResult.success(UserEnum.SUCCESS.getMessage());
     }
 
     @Override
-    public ServerResponse<String> forgetGetQuestion(String username) {
+    public HandlerResult<String> forgetGetQuestion(String username) {
         // 1. 判断用户名是否存在
-        ServerResponse<String> checkValid = this.checkValid(username, Const.USERNAME);
+        HandlerResult<String> checkValid = this.checkValid(username, Const.USERNAME);
         if (checkValid.isSuccess()) {
-            return ServerResponse.error("用户不存在");
+            return HandlerResult.error(UserEnum.USERNAME_NOT_EXIST.getMessage());
         }
         // 2. 判断问题是否存在
         String getQuestion = userMapper.selectQuestionByUsername(username);
-        if (StringUtils.isNotBlank(getQuestion)) {
-            return ServerResponse.error("该用户未设置找回密码问题");
+        if (StringUtils.isBlank(getQuestion)) {
+            return HandlerResult.error(UserEnum.QUESTION_IS_NULL.getMessage());
         }
-        return ServerResponse.success(getQuestion);
+        return HandlerResult.success(getQuestion);
     }
 
     @Override
-    public ServerResponse<String> forgetCheckAnswer(String username,
-                                                    String question, String answer) {
+    public HandlerResult<String> forgetCheckAnswer(String username,
+                                                   String question, String answer) {
+        // 校验用户名
+        HandlerResult<String> checkValid = this.checkValid(username, Const.USERNAME);
+        if (checkValid.isSuccess()) {
+            return HandlerResult.error(UserEnum.USERNAME_NOT_EXIST.getMessage());
+        }
+        // 校验密保问题和答案
         int selectAnswer = userMapper.selectAnswer(username, question, answer);
         if (selectAnswer == 0) {
-            return ServerResponse.error("找回失败，请检查密保问题或密保答案是否正确");
+            return HandlerResult.error(UserEnum.GET_BACK_PASSWORD_ERROR.getMessage());
         }
+        // 使用UUID生成Token并且加入本地缓存
         String token = UUID.randomUUID().toString();
-        TokenCache.setKey("token_" + username, token);
-        return ServerResponse.success(token);
+        TokenCache.setKey(Const.TOKEN_PREFIX + username, token);
+        return HandlerResult.success(token);
+    }
+
+    @Override
+    public HandlerResult<String> forgetResetPassword(String username,
+                                                     String passwordNew, String forgetToken) {
+        // 校验token
+        if (StringUtils.isBlank(forgetToken)) {
+            return HandlerResult.error(UserEnum.ILLEGAL_ARGUMENT.getMessage());
+        }
+        // 校验用户名
+        HandlerResult<String> checkValid = this.checkValid(username, Const.USERNAME);
+        if (checkValid.isSuccess()) {
+            return HandlerResult.error(UserEnum.USERNAME_NOT_EXIST.getMessage());
+        }
+        String tokenUser = TokenCache.getKey(Const.TOKEN_PREFIX + username);
+        // 校验token
+        if (StringUtils.isBlank(tokenUser)) {
+            return HandlerResult.error(UserEnum.TOKEN_INEFFECTIVENESS.getMessage());
+        }
+        if (!StringUtils.equals(forgetToken, tokenUser)) {
+            return HandlerResult.error(UserEnum.TOKEN_INEFFECTIVENESS.getMessage());
+        }
+        // 重设密码
+        String md5Password = MD5Util.MD5EncodeUtf8(passwordNew);
+        Integer resultSum = userMapper.updatePasswordByUsername(username, md5Password);
+        if (resultSum == 0) {
+            return HandlerResult.error(UserEnum.UPDATE_PASSWORD_ERROR.getMessage());
+        }
+        return HandlerResult.error(UserEnum.SUCCESS.getMessage());
+    }
+
+    @Override
+    public HandlerResult<String> resetPassword(UserInfoVo userInfoVo,
+                                               String passwordOld, String passwordNew) {
+        User user = new User();
+        BeanUtils.copyProperties(userInfoVo, user);
+        // 防止横向越权，要校验一下用户的旧密码，密码一定要记得是MD5加密后的
+        Integer resultSum = userMapper.checkPassword(MD5Util.MD5EncodeUtf8(passwordOld), user.getId());
+        if (resultSum == 0) {
+            return HandlerResult.error(UserEnum.OLD_PASSWORD_ERROR.getMessage());
+        }
+        // 设置新密码
+        user.setPassword(MD5Util.MD5EncodeUtf8(passwordNew));
+        int updateSum = userMapper.updateByPrimaryKeySelective(user);
+        if (updateSum == 0) {
+            return HandlerResult.success(UserEnum.UPDATE_PASSWORD_ERROR.getMessage());
+        }
+        return HandlerResult.success(UserEnum.SUCCESS.getMessage());
     }
 }

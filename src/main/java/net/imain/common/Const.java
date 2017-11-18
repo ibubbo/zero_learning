@@ -12,6 +12,9 @@ public class Const {
     public static final String EMAIL = "email";
 
     public static final String USERNAME = "username";
+
+    public static final String TOKEN_PREFIX = "token_";
+
     /**
      * 角色接口：
      *  0: 管理员

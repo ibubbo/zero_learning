@@ -1,6 +1,5 @@
 package net.imain.dao;
 
-import net.imain.common.ServerResponse;
 import net.imain.pojo.User;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,6 +33,16 @@ public interface UserMapper {
     Integer checkEmail(@Param("email") String email);
 
     /**
+     * 根据用户id校验用户密码
+     *
+     * @param password
+     * @param userId
+     * @return
+     */
+    Integer checkPassword(@Param("password") String password,
+                          @Param("userId") Integer userId);
+
+    /**
      * 查询用户信息
      *
      * @param username
@@ -59,7 +68,17 @@ public interface UserMapper {
      * @param answer
      * @return
      */
-    int selectAnswer(@Param("username") String username,
+    Integer selectAnswer(@Param("username") String username,
                      @Param("question") String question,
                      @Param("answer") String answer);
+
+    /**
+     * 根据用户名修改用户密码
+     *
+     * @param username 被修改的用户名
+     * @param password 新密码
+     * @return 修改成功的条数
+     */
+    Integer updatePasswordByUsername(@Param("username") String username,
+                                     @Param("password") String password);
 }
