@@ -76,4 +76,20 @@ public interface IUserService {
      */
     HandlerResult<String> resetPassword(UserInfoVo user,
                                                String passwordOld, String passwordNew);
+
+    /**
+     * 登录状态下更新个人信息
+     *
+     * @param user 用户信息
+     * @return
+     */
+    HandlerResult<User> updateInformation(User user);
+
+    /**
+     * 根据用户id获取用户信息
+     *
+     * @param userId 用户id
+     * @return
+     */
+    HandlerResult<User> getInformation(Integer userId);
 }

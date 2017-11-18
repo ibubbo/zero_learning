@@ -34,7 +34,13 @@ public enum UserEnum {
 
     UPDATE_PASSWORD_ERROR(12, "更新密码错误"),
 
-    REGISTER_ERROR(13, "注册失败")
+    REGISTER_ERROR(13, "注册失败"),
+
+    UPDATE_USERINFO_ERROR(14, "更新个人信息失败"),
+
+    NOT_FIND_USERINFO(15, "没有找到用户信息"),
+
+    IS_NOT_ADMIN(16, "不是管理员")
 
     ;
 

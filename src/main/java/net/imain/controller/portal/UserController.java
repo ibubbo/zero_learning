@@ -6,6 +6,7 @@ import net.imain.common.HandlerResult;
 import net.imain.pojo.User;
 import net.imain.service.IUserService;
 import net.imain.vo.UserInfoVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -128,4 +129,37 @@ public class UserController {
         return iUserService.resetPassword(user, passwordOld, passwordNew);
     }
 
+    /**
+     * 登录状态下更新个人信息:update_information.do
+     */
+    @RequestMapping(value = "update_information.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult<User> updateInformation(HttpSession session, User user) {
+        UserInfoVo userInfoVo = (UserInfoVo) session.getAttribute(Const.CURRENT_USER);
+        if (userInfoVo == null) {
+            return HandlerResult.error(UserEnum.NEED_LOGIN.getMessage());
+        }
+        // 补全信息
+        user.setId(userInfoVo.getId());
+        // 更新
+        HandlerResult<User> resultUser = iUserService.updateInformation(user);
+        if (!resultUser.isSuccess()) {
+            return resultUser;
+        }
+        session.setAttribute(Const.CURRENT_USER, resultUser);
+        return HandlerResult.success(UserEnum.SUCCESS.getMessage());
+    }
+
+    /**
+     * 获取用户信息，如果没有登录则强制登录
+     */
+    @RequestMapping(value = "get_information.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult<User> getInformation(HttpSession session) {
+        UserInfoVo userInfoVo = (UserInfoVo) session.getAttribute(Const.CURRENT_USER);
+        if (userInfoVo == null) {
+            return HandlerResult.error(UserEnum.NEED_LOGIN.getCode(), "用户未登录，强制登录");
+        }
+        return iUserService.getInformation(userInfoVo.getId());
+    }
 }

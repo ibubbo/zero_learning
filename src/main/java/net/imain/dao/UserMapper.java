@@ -33,6 +33,16 @@ public interface UserMapper {
     Integer checkEmail(@Param("email") String email);
 
     /**
+     * 根据用户ID校验用户邮箱
+     *
+     * @param email
+     * @param userId
+     * @return
+     */
+    Integer checkEmailByUserId(@Param("email") String email,
+                               @Param("userId") Integer userId);
+
+    /**
      * 根据用户id校验用户密码
      *
      * @param password
@@ -81,4 +91,5 @@ public interface UserMapper {
      */
     Integer updatePasswordByUsername(@Param("username") String username,
                                      @Param("password") String password);
+
 }

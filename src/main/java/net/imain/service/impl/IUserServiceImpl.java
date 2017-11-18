@@ -1,6 +1,7 @@
 package net.imain.service.impl;
 
 import net.imain.common.Const;
+import net.imain.common.HandlerConverter;
 import net.imain.enums.UserEnum;
 import net.imain.common.HandlerResult;
 import net.imain.common.TokenCache;
@@ -14,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 /**
@@ -166,8 +168,8 @@ public class IUserServiceImpl implements IUserService {
     @Override
     public HandlerResult<String> resetPassword(UserInfoVo userInfoVo,
                                                String passwordOld, String passwordNew) {
-        User user = new User();
-        BeanUtils.copyProperties(userInfoVo, user);
+        // UserInfoVo -> User
+        User user = HandlerConverter.userInfoToUser(userInfoVo);
         // 防止横向越权，要校验一下用户的旧密码，密码一定要记得是MD5加密后的
         Integer resultSum = userMapper.checkPassword(MD5Util.MD5EncodeUtf8(passwordOld), user.getId());
         if (resultSum == 0) {
@@ -180,5 +182,38 @@ public class IUserServiceImpl implements IUserService {
             return HandlerResult.success(UserEnum.UPDATE_PASSWORD_ERROR.getMessage());
         }
         return HandlerResult.success(UserEnum.SUCCESS.getMessage());
+    }
+
+
+    @Override
+    public HandlerResult<User> updateInformation(User user) {
+        // 校验邮箱，要更改的邮箱不能是其他用户ID已经拥有的
+        Integer resultSum = userMapper.checkEmailByUserId(user.getEmail(), user.getId());
+        if (resultSum > 0) {
+            return HandlerResult.error(UserEnum.EMAIL_EXIST.getMessage());
+        }
+        // 修改（用户名不能被修改）
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setEmail(user.getEmail());
+        updateUser.setPhone(user.getPhone());
+        updateUser.setQuestion(user.getQuestion());
+        updateUser.setAnswer(user.getAnswer());
+
+        Integer updateUserSum = userMapper.updateByPrimaryKeySelective(updateUser);
+        if (updateUserSum == 0) {
+            return HandlerResult.error(UserEnum.UPDATE_USERINFO_ERROR.getMessage());
+        }
+
+        return HandlerResult.success(UserEnum.SUCCESS.getMessage(), updateUser);
+    }
+
+    public HandlerResult<User> getInformation(Integer userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        if (user == null) {
+            return HandlerResult.error(UserEnum.NOT_FIND_USERINFO.getMessage());
+        }
+        user.setPassword(StringUtils.EMPTY);
+        return HandlerResult.success(user);
     }
 }
