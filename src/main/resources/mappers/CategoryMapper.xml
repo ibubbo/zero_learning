@@ -116,4 +116,7 @@
       update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="checkCategoryName" resultType="java.lang.Integer">
+    select count(1) from mmall_category where name = #{categoryName}
+  </select>
 </mapper>

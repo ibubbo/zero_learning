@@ -3,7 +3,6 @@ package net.imain.controller.backend;
 import net.imain.common.Const;
 import net.imain.common.HandlerResult;
 import net.imain.enums.UserEnum;
-import net.imain.pojo.User;
 import net.imain.service.IUserService;
 import net.imain.vo.UserInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;

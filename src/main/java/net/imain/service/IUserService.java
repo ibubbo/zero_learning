@@ -92,4 +92,12 @@ public interface IUserService {
      * @return
      */
     HandlerResult<User> getInformation(Integer userId);
+
+    /**
+     * 校验用户权限
+     *
+     * @param user 需要校验的用户
+     * @return
+     */
+    HandlerResult checkAdminRole(UserInfoVo user);
 }

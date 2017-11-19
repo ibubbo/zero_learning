@@ -8,39 +8,33 @@ package net.imain.enums;
  */
 public enum UserEnum {
 
-    SUCCESS(0, "成功"),
-
-    ERROR(1, "错误"),
-
     NEED_LOGIN(10, "用户需要登录"),
 
-    ILLEGAL_ARGUMENT(2, "参数错误"),
+    OLD_PASSWORD_ERROR(11, "旧密码错误"),
 
-    OLD_PASSWORD_ERROR(3, "旧密码错误"),
+    USERNAME_NOT_EXIST(12, "用户名不存在"),
 
-    USERNAME_NOT_EXIST(4, "用户名不存在"),
+    PASSWORD_ERROR(13, "密码错误"),
 
-    PASSWORD_ERROR(5, "密码错误"),
+    USERNAME_EXIST(14, "用户名已存在"),
 
-    USERNAME_EXIST(6, "用户名已存在"),
+    EMAIL_EXIST(15, "邮箱已存在"),
 
-    EMAIL_EXIST(7, "邮箱已存在"),
+    QUESTION_IS_NULL(16, "密保问题为空"),
 
-    QUESTION_IS_NULL(8, "密保问题为空"),
+    GET_BACK_PASSWORD_ERROR(17, "找回密码失败"),
 
-    GET_BACK_PASSWORD_ERROR(9, "找回密码失败"),
+    TOKEN_INEFFECTIVENESS(18, "token无效"),
 
-    TOKEN_INEFFECTIVENESS(11, "token无效"),
+    UPDATE_PASSWORD_ERROR(19, "更新密码错误"),
 
-    UPDATE_PASSWORD_ERROR(12, "更新密码错误"),
+    REGISTER_ERROR(20, "注册失败"),
 
-    REGISTER_ERROR(13, "注册失败"),
+    UPDATE_USERINFO_ERROR(21, "更新个人信息失败"),
 
-    UPDATE_USERINFO_ERROR(14, "更新个人信息失败"),
+    NOT_FIND_USERINFO(22, "没有找到用户信息"),
 
-    NOT_FIND_USERINFO(15, "没有找到用户信息"),
-
-    IS_NOT_ADMIN(16, "不是管理员")
+    IS_NOT_ADMIN(23, "用户权限不足")
 
     ;
 

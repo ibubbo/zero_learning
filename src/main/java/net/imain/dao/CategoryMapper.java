@@ -1,5 +1,6 @@
 package net.imain.dao;
 
+import net.imain.common.HandlerResult;
 import net.imain.pojo.Category;
 
 /**
@@ -41,19 +42,15 @@ public interface CategoryMapper {
      */
     Category selectByPrimaryKey(Integer id);
 
-    /**
-     *
-     *
-     * @param record
-     * @return
-     */
     int updateByPrimaryKeySelective(Category record);
 
+    int updateByPrimaryKey(Category record);
+
     /**
+     * 校验分类名称是否重复
      *
-     *
-     * @param record
+     * @param categoryName
      * @return
      */
-    int updateByPrimaryKey(Category record);
+    Integer checkCategoryName(String categoryName);
 }

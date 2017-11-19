@@ -8,18 +8,26 @@ import java.util.Date;
  * @author uncle
  */
 public class Category {
+
+    /** 分类ID .*/
     private Integer id;
 
+    /** 父类ID：0 根节点 .*/
     private Integer parentId;
 
+    /** 分类名称 .*/
     private String name;
 
+    /** 分类状态：1 正常  2 废弃 .*/
     private Boolean status;
 
+    /** 排序编号，数值相等则自然排序 .*/
     private Integer sortOrder;
 
+    /** 创建时间 .*/
     private Date createTime;
 
+    /** 更新时间 .*/
     private Date updateTime;
 
     public Category(Integer id, Integer parentId, String name, Boolean status, Integer sortOrder, Date createTime, Date updateTime) {

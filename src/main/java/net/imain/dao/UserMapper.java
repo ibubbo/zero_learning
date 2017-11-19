@@ -91,5 +91,4 @@ public interface UserMapper {
      */
     Integer updatePasswordByUsername(@Param("username") String username,
                                      @Param("password") String password);
-
 }

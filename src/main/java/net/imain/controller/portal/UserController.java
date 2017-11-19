@@ -1,12 +1,12 @@
 package net.imain.controller.portal;
 
 import net.imain.common.Const;
+import net.imain.enums.HandlerEnum;
 import net.imain.enums.UserEnum;
 import net.imain.common.HandlerResult;
 import net.imain.pojo.User;
 import net.imain.service.IUserService;
 import net.imain.vo.UserInfoVo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -130,7 +130,7 @@ public class UserController {
     }
 
     /**
-     * 登录状态下更新个人信息:update_information.do
+     * 登录状态下更新个人信息
      */
     @RequestMapping(value = "update_information.do", method = RequestMethod.GET)
     @ResponseBody
@@ -147,7 +147,7 @@ public class UserController {
             return resultUser;
         }
         session.setAttribute(Const.CURRENT_USER, resultUser);
-        return HandlerResult.success(UserEnum.SUCCESS.getMessage());
+        return HandlerResult.success(HandlerEnum.SUCCESS.getMessage());
     }
 
     /**

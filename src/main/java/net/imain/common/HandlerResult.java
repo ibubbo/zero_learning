@@ -1,5 +1,6 @@
 package net.imain.common;
 
+import net.imain.enums.HandlerEnum;
 import net.imain.enums.UserEnum;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -39,7 +40,7 @@ public class HandlerResult<T> implements Serializable {
     // 加此注解，不会被JSON序列化
     @JsonIgnore
     public boolean isSuccess() {
-        return this.status.equals(UserEnum.SUCCESS.getCode());
+        return this.status.equals(HandlerEnum.SUCCESS.getCode());
     }
 
     public Integer getStatus() {
@@ -55,27 +56,27 @@ public class HandlerResult<T> implements Serializable {
     }
 
     public static <T> HandlerResult<T> success() {
-        return new HandlerResult<T>(UserEnum.SUCCESS.getCode());
+        return new HandlerResult<T>(HandlerEnum.SUCCESS.getCode());
     }
 
     public static <T> HandlerResult<T> success(String msg) {
-        return new HandlerResult<T>(UserEnum.SUCCESS.getCode(), msg);
+        return new HandlerResult<T>(HandlerEnum.SUCCESS.getCode(), msg);
     }
 
     public static <T> HandlerResult<T> success(T data) {
-        return new HandlerResult<T>(UserEnum.SUCCESS.getCode(), data);
+        return new HandlerResult<T>(HandlerEnum.SUCCESS.getCode(), data);
     }
 
     public static <T> HandlerResult<T> success(String msg, T data) {
-        return new HandlerResult<T>(UserEnum.SUCCESS.getCode(), msg, data);
+        return new HandlerResult<T>(HandlerEnum.SUCCESS.getCode(), msg, data);
     }
 
     public static <T> HandlerResult<T> error() {
-        return new HandlerResult<T>(UserEnum.ERROR.getCode(), UserEnum.ERROR.getMessage());
+        return new HandlerResult<T>(HandlerEnum.ERROR.getCode(), HandlerEnum.ERROR.getMessage());
     }
 
     public static <T> HandlerResult<T> error(String msg) {
-        return new HandlerResult<T>(UserEnum.ERROR.getCode(), msg);
+        return new HandlerResult<T>(HandlerEnum.ERROR.getCode(), msg);
     }
 
     public static <T> HandlerResult<T> error(Integer code, String msg) {

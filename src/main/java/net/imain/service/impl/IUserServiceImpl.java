@@ -2,6 +2,7 @@ package net.imain.service.impl;
 
 import net.imain.common.Const;
 import net.imain.common.HandlerConverter;
+import net.imain.enums.HandlerEnum;
 import net.imain.enums.UserEnum;
 import net.imain.common.HandlerResult;
 import net.imain.common.TokenCache;
@@ -14,8 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 /**
@@ -49,7 +48,7 @@ public class IUserServiceImpl implements IUserService {
         // 数据准备
         UserInfoVo vo = new UserInfoVo();
         BeanUtils.copyProperties(resultUser, vo);
-        return HandlerResult.success(UserEnum.SUCCESS.getMessage(), vo);
+        return HandlerResult.success(HandlerEnum.SUCCESS.getMessage(), vo);
     }
 
     @Override
@@ -72,18 +71,18 @@ public class IUserServiceImpl implements IUserService {
         if (resultSum == 0) {
             return HandlerResult.error(UserEnum.REGISTER_ERROR.getMessage());
         }
-        return HandlerResult.success(UserEnum.SUCCESS.getMessage());
+        return HandlerResult.success(HandlerEnum.SUCCESS.getMessage());
     }
 
     @Override
     public HandlerResult<String> checkValid(String str, String type) {
         // 数据判空
         if (StringUtils.isBlank(type)) {
-            return HandlerResult.error(UserEnum.ILLEGAL_ARGUMENT.getMessage());
+            return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
         }
         // 校验 type 是否合法
         if (!Const.USERNAME.equals(type) && !Const.EMAIL.equals(type)) {
-            return HandlerResult.error(UserEnum.ILLEGAL_ARGUMENT.getMessage());
+            return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
         }
         // 如果是用户名
         if (Const.USERNAME.equals(type)) {
@@ -99,7 +98,7 @@ public class IUserServiceImpl implements IUserService {
                 return HandlerResult.error(UserEnum.EMAIL_EXIST.getMessage());
             }
         }
-        return HandlerResult.success(UserEnum.SUCCESS.getMessage());
+        return HandlerResult.success(HandlerEnum.SUCCESS.getMessage());
     }
 
     @Override
@@ -141,7 +140,7 @@ public class IUserServiceImpl implements IUserService {
                                                      String passwordNew, String forgetToken) {
         // 校验token
         if (StringUtils.isBlank(forgetToken)) {
-            return HandlerResult.error(UserEnum.ILLEGAL_ARGUMENT.getMessage());
+            return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
         }
         // 校验用户名
         HandlerResult<String> checkValid = this.checkValid(username, Const.USERNAME);
@@ -162,7 +161,7 @@ public class IUserServiceImpl implements IUserService {
         if (resultSum == 0) {
             return HandlerResult.error(UserEnum.UPDATE_PASSWORD_ERROR.getMessage());
         }
-        return HandlerResult.error(UserEnum.SUCCESS.getMessage());
+        return HandlerResult.error(HandlerEnum.SUCCESS.getMessage());
     }
 
     @Override
@@ -181,9 +180,8 @@ public class IUserServiceImpl implements IUserService {
         if (updateSum == 0) {
             return HandlerResult.success(UserEnum.UPDATE_PASSWORD_ERROR.getMessage());
         }
-        return HandlerResult.success(UserEnum.SUCCESS.getMessage());
+        return HandlerResult.success(HandlerEnum.SUCCESS.getMessage());
     }
-
 
     @Override
     public HandlerResult<User> updateInformation(User user) {
@@ -205,9 +203,10 @@ public class IUserServiceImpl implements IUserService {
             return HandlerResult.error(UserEnum.UPDATE_USERINFO_ERROR.getMessage());
         }
 
-        return HandlerResult.success(UserEnum.SUCCESS.getMessage(), updateUser);
+        return HandlerResult.success(HandlerEnum.SUCCESS.getMessage(), updateUser);
     }
 
+    @Override
     public HandlerResult<User> getInformation(Integer userId) {
         User user = userMapper.selectByPrimaryKey(userId);
         if (user == null) {
@@ -215,5 +214,13 @@ public class IUserServiceImpl implements IUserService {
         }
         user.setPassword(StringUtils.EMPTY);
         return HandlerResult.success(user);
+    }
+
+    @Override
+    public HandlerResult checkAdminRole(UserInfoVo user) {
+        if (!(user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN)) {
+            return HandlerResult.error();
+        }
+        return HandlerResult.success();
     }
 }
