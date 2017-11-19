@@ -11,7 +11,9 @@ public enum  CategoryEnum {
 
     ADD_CATEGORY_ERROR(51, "添加分类失败"),
 
-    UPDATE_CATEGORY_NAME_ERROR(52, "更新分类名称失败")
+    UPDATE_CATEGORY_NAME_ERROR(52, "更新分类名称失败"),
+
+    CHILD_NOT_EXIST(53, "未找到该分类的子节点"),
 
     ;
 

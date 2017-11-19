@@ -3,6 +3,8 @@ package net.imain.dao;
 import net.imain.common.HandlerResult;
 import net.imain.pojo.Category;
 
+import java.util.List;
+
 /**
  * 分类接口层
  *
@@ -53,4 +55,18 @@ public interface CategoryMapper {
      * @return
      */
     Integer checkCategoryName(String categoryName);
+
+    /**
+     * 获得所有子节点的id
+     *
+     * @param parentId
+     * @return
+     */
+    List<Category> selectCategoryChildrenByParentId(Integer parentId);
+
+    /**
+     * 假如传的是一个大分类：100001
+     *  先查出直接子节点：select * from mmall_category where parent_id = parentId;
+     *  如果查出的结果大于0，就遍历，根据查询的子节点id再去查：select * from mmall_category where parent_id = parentId;
+     */
 }
