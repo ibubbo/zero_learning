@@ -12,6 +12,8 @@ public enum HandlerEnum {
     ERROR(1, "操作发生了错误"),
 
     ILLEGAL_ARGUMENT(2, "参数错误"),
+
+    SERVER_EXCEPTION(-1, "服务端异常")
     ;
 
     private final Integer code;

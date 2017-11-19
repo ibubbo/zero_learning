@@ -1,14 +1,10 @@
 package net.imain.controller.backend;
 
-import net.imain.common.Const;
 import net.imain.common.HandlerCheck;
 import net.imain.common.HandlerResult;
-import net.imain.enums.UserEnum;
 import net.imain.pojo.Category;
-import net.imain.pojo.User;
 import net.imain.service.ICategoryService;
 import net.imain.service.IUserService;
-import net.imain.vo.UserInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +37,7 @@ public class CategoryController {
     public HandlerResult<String> addCategory(@RequestParam(value = "parentId", defaultValue = "0")
                                                      Integer parentId, String categoryName, HttpSession session) {
         // 校验
-        HandlerResult resultCheck = HandlerCheck.checkNullAndRole(session, iUserService);
+        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, iUserService);
         if (!resultCheck.isSuccess()) {
             return resultCheck;
         }
@@ -57,7 +53,7 @@ public class CategoryController {
     public HandlerResult<String> setCategoryName(HttpSession session,
                                                  Integer categoryId, String categoryName) {
         // 1.数据校验
-        HandlerResult resultCheck = HandlerCheck.checkNullAndRole(session, iUserService);
+        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, iUserService);
         if (!resultCheck.isSuccess()) {
             return resultCheck;
         }
@@ -73,7 +69,7 @@ public class CategoryController {
     public HandlerResult<List<Category>> getCategory(HttpSession session,
                                                      @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         // 校验
-        HandlerResult resultCheck = HandlerCheck.checkNullAndRole(session, iUserService);
+        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, iUserService);
         if (!resultCheck.isSuccess()) {
             return resultCheck;
         }
@@ -89,7 +85,7 @@ public class CategoryController {
     public HandlerResult<List<Integer>> getCategoryAndDeepChildrenCategory(HttpSession session,
                                                                            @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         // 校验
-        HandlerResult resultCheck = HandlerCheck.checkNullAndRole(session, iUserService);
+        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, iUserService);
         if (!resultCheck.isSuccess()) {
             return resultCheck;
         }

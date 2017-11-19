@@ -1,6 +1,7 @@
 package net.imain.controller.portal;
 
 import net.imain.common.Const;
+import net.imain.common.HandlerCheck;
 import net.imain.enums.HandlerEnum;
 import net.imain.enums.UserEnum;
 import net.imain.common.HandlerResult;
@@ -49,9 +50,9 @@ public class UserController {
         try {
             session.removeAttribute(Const.CURRENT_USER);
         } catch (Exception e) {
-            return HandlerResult.error("服务端异常");
+            return HandlerResult.error(HandlerEnum.SERVER_EXCEPTION.getMessage());
         }
-        return HandlerResult.success("退出成功");
+        return HandlerResult.success(HandlerEnum.SUCCESS.getMessage());
     }
 
     /**
@@ -80,8 +81,9 @@ public class UserController {
     public HandlerResult<UserInfoVo> getUserInfo(HttpSession session) {
         UserInfoVo user = (UserInfoVo) session.getAttribute(Const.CURRENT_USER);
         if (user == null) {
-            return HandlerResult.error("用户未登录,无法获取当前用户信息");
+            return HandlerResult.error(UserEnum.NEED_LOGIN.getMessage());
         }
+
         return HandlerResult.success(user);
     }
 
@@ -158,8 +160,9 @@ public class UserController {
     public HandlerResult<User> getInformation(HttpSession session) {
         UserInfoVo userInfoVo = (UserInfoVo) session.getAttribute(Const.CURRENT_USER);
         if (userInfoVo == null) {
-            return HandlerResult.error(UserEnum.NEED_LOGIN.getCode(), "用户未登录，强制登录");
+            return HandlerResult.error(UserEnum.NEED_LOGIN.getCode(), UserEnum.NEED_LOGIN.getMessage());
         }
+
         return iUserService.getInformation(userInfoVo.getId());
     }
 }
