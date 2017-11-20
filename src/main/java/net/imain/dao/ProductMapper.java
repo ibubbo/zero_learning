@@ -1,6 +1,7 @@
 package net.imain.dao;
 
 import net.imain.pojo.Product;
+import org.apache.ibatis.annotations.Param;
 
 public interface ProductMapper {
     int deleteByPrimaryKey(Integer id);

@@ -15,6 +15,7 @@ public enum  CategoryEnum {
 
     CHILD_NOT_EXIST(53, "未找到该分类的子节点"),
 
+    CATEGORY_ID_NOT_EXIST(54, "分类ID不存在"),
     ;
 
     private final Integer code;

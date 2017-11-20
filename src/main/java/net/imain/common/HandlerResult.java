@@ -15,6 +15,7 @@ import java.io.Serializable;
 public class HandlerResult<T> implements Serializable {
     private Integer status;
     private String msg;
+    // 这是声明此类的data字段可以是任意类型
     private T data;
 
     private HandlerResult(Integer status) {
@@ -55,6 +56,12 @@ public class HandlerResult<T> implements Serializable {
         return data;
     }
 
+    /**
+     * 返回成功
+     *
+     * @param <T> 这是声明此方法是一个泛型方法，返回值可以是任意类型
+     * @return
+     */
     public static <T> HandlerResult<T> success() {
         return new HandlerResult<T>(HandlerEnum.SUCCESS.getCode());
     }

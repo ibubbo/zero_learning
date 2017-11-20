@@ -11,7 +11,7 @@ import java.util.List;
  * @author: uncle
  * @apdateTime: 2017-11-19 10:51
  */
-public interface ICategoryService {
+public interface CategoryService {
 
     /**
      * 添加分类

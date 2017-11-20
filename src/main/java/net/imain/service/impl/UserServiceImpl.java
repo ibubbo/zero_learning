@@ -5,7 +5,7 @@ import net.imain.enums.HandlerEnum;
 import net.imain.enums.UserEnum;
 import net.imain.dao.UserMapper;
 import net.imain.pojo.User;
-import net.imain.service.IUserService;
+import net.imain.service.UserService;
 import net.imain.util.MD5Util;
 import net.imain.vo.UserInfoVo;
 import org.apache.commons.lang3.StringUtils;
@@ -20,8 +20,8 @@ import java.util.UUID;
  * @author: uncle
  * @apdateTime: 2017-11-16 16:57
  */
-@Service("iUserService")
-public class IUserServiceImpl implements IUserService {
+@Service("userService")
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;

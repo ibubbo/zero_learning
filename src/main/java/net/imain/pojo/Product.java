@@ -1,5 +1,7 @@
 package net.imain.pojo;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -44,6 +46,7 @@ public class Product {
     private Date createTime;
 
     /** 更新时间 .*/
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updateTime;
 
     public Product(Integer id, Integer categoryId, String name, String subtitle, String mainImage, String subImages, String detail, BigDecimal price, Integer stock, Integer status, Date createTime, Date updateTime) {

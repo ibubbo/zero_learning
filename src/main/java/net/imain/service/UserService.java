@@ -8,7 +8,7 @@ import net.imain.vo.UserInfoVo;
  * @author: uncle
  * @apdateTime: 2017-11-16 16:55
  */
-public interface IUserService {
+public interface UserService {
 
     /**
      * 用户登录

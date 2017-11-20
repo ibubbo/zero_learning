@@ -3,10 +3,9 @@ package net.imain.controller.portal;
 import net.imain.common.Const;
 import net.imain.common.HandlerCheck;
 import net.imain.enums.HandlerEnum;
-import net.imain.enums.UserEnum;
 import net.imain.common.HandlerResult;
 import net.imain.pojo.User;
-import net.imain.service.IUserService;
+import net.imain.service.UserService;
 import net.imain.vo.UserInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,7 +24,7 @@ import javax.servlet.http.HttpSession;
 public class UserController {
 
     @Autowired
-    private IUserService iUserService;
+    private UserService iUserService;
 
     /**
      * 用户登录
@@ -80,7 +79,7 @@ public class UserController {
     @ResponseBody
     public HandlerResult<UserInfoVo> getUserInfo(HttpSession session) {
         // 检验用户是否登录
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session, true);
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
         if (!handlerResult.isSuccess()) {
             return handlerResult;
         }
@@ -127,7 +126,7 @@ public class UserController {
     public HandlerResult<String> resetPassword(HttpSession session,
                                                String passwordOld, String passwordNew) {
         // 检验用户是否登录
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session, true);
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
         if (!handlerResult.isSuccess()) {
             return handlerResult;
         }
@@ -143,7 +142,7 @@ public class UserController {
     @ResponseBody
     public HandlerResult<User> updateInformation(HttpSession session, User user) {
         // 检验用户是否登录
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session, true);
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
         if (!handlerResult.isSuccess()) {
             return handlerResult;
         }
@@ -167,7 +166,7 @@ public class UserController {
     @ResponseBody
     public HandlerResult<User> getInformation(HttpSession session) {
         // 检验用户是否登录
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session, true);
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
         if (!handlerResult.isSuccess()) {
             return handlerResult;
         }

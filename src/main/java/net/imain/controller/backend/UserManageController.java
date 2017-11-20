@@ -3,7 +3,7 @@ package net.imain.controller.backend;
 import net.imain.common.Const;
 import net.imain.common.HandlerResult;
 import net.imain.enums.UserEnum;
-import net.imain.service.IUserService;
+import net.imain.service.UserService;
 import net.imain.vo.UserInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
 public class UserManageController {
 
     @Autowired
-    private IUserService iUserService;
+    private UserService userService;
 
     /**
      * 管理员登录
@@ -31,7 +31,7 @@ public class UserManageController {
     @ResponseBody
     public HandlerResult<UserInfoVo> login(String username,
                                            String password, HttpSession session) {
-        HandlerResult<UserInfoVo> userInfo = iUserService.login(username, password);
+        HandlerResult<UserInfoVo> userInfo = userService.login(username, password);
         if (userInfo.isSuccess()) {
             UserInfoVo user = userInfo.getData();
             if (!(user.getRole() == Const.Role.ROLE_ADMIN)) {

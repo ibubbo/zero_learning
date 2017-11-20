@@ -7,7 +7,7 @@ import net.imain.dao.CategoryMapper;
 import net.imain.enums.CategoryEnum;
 import net.imain.enums.HandlerEnum;
 import net.imain.pojo.Category;
-import net.imain.service.ICategoryService;
+import net.imain.service.CategoryService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -26,13 +25,13 @@ import java.util.Set;
  * @author: uncle
  * @apdateTime: 2017-11-19 10:51
  */
-@Service(value = "iCategoryService")
-public class ICategoryServiceImpl implements ICategoryService {
+@Service(value = "categoryService")
+public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryMapper categoryMapper;
 
-    private static Logger logger = LoggerFactory.getLogger(ICategoryServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
     @Override
     public HandlerResult<String> addCategory(Integer parentId, String categoryName) {
@@ -107,7 +106,7 @@ public class ICategoryServiceImpl implements ICategoryService {
         // 添加当前id
         Optional.ofNullable(categoryMapper.selectByPrimaryKey(categoryId))
                 .ifPresent(category -> categorySet.add(category));
-        // 根据当前id查找子节点，递归一定要有一个退出的条件
+        // 根据当前id查找子节点
         categoryMapper.selectCategoryChildrenByParentId(categoryId)
                 .forEach(categoryItem -> findChildCategory(categorySet, categoryItem.getId()));
         return categorySet;

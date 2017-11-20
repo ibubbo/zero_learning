@@ -65,8 +65,10 @@ public interface CategoryMapper {
     List<Category> selectCategoryChildrenByParentId(Integer parentId);
 
     /**
-     * 假如传的是一个大分类：100001
-     *  先查出直接子节点：select * from mmall_category where parent_id = parentId;
-     *  如果查出的结果大于0，就遍历，根据查询的子节点id再去查：select * from mmall_category where parent_id = parentId;
+     * 校验分类ID是否存在
+     *
+     * @param id
+     * @return
      */
+    Integer checkCategoryByPrimaryKey(Integer id);
 }

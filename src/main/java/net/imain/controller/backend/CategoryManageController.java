@@ -3,8 +3,8 @@ package net.imain.controller.backend;
 import net.imain.common.HandlerCheck;
 import net.imain.common.HandlerResult;
 import net.imain.pojo.Category;
-import net.imain.service.ICategoryService;
-import net.imain.service.IUserService;
+import net.imain.service.CategoryService;
+import net.imain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,13 +21,13 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/manage/category/")
-public class CategoryController {
+public class CategoryManageController {
 
     @Autowired
-    private IUserService iUserService;
+    private UserService userService;
 
     @Autowired
-    private ICategoryService iCategoryService;
+    private CategoryService categoryService;
 
     /**
      * 新增节点
@@ -37,12 +37,12 @@ public class CategoryController {
     public HandlerResult<String> addCategory(@RequestParam(value = "parentId", defaultValue = "0")
                                                      Integer parentId, String categoryName, HttpSession session) {
         // 校验
-        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, iUserService);
+        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, userService);
         if (!resultCheck.isSuccess()) {
             return resultCheck;
         }
         // 处理分类逻辑
-        return iCategoryService.addCategory(parentId, categoryName);
+        return categoryService.addCategory(parentId, categoryName);
     }
 
     /**
@@ -53,12 +53,12 @@ public class CategoryController {
     public HandlerResult<String> setCategoryName(HttpSession session,
                                                  Integer categoryId, String categoryName) {
         // 1.数据校验
-        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, iUserService);
+        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, userService);
         if (!resultCheck.isSuccess()) {
             return resultCheck;
         }
         // 2.更新分类名称
-        return iCategoryService.setCategoryName(categoryId, categoryName);
+        return categoryService.setCategoryName(categoryId, categoryName);
     }
 
     /**
@@ -69,12 +69,12 @@ public class CategoryController {
     public HandlerResult<List<Category>> getCategory(HttpSession session,
                                                      @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         // 校验
-        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, iUserService);
+        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, userService);
         if (!resultCheck.isSuccess()) {
             return resultCheck;
         }
         // 获取当前分类的父类id，遍历所有此id的子节点id
-        return iCategoryService.getCategory(categoryId);
+        return categoryService.getCategory(categoryId);
     }
 
     /**
@@ -85,11 +85,11 @@ public class CategoryController {
     public HandlerResult<List<Integer>> getCategoryAndDeepChildrenCategory(HttpSession session,
                                                                            @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         // 校验
-        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, iUserService);
+        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, userService);
         if (!resultCheck.isSuccess()) {
             return resultCheck;
         }
         // 2.查询
-        return iCategoryService.selectCategoryAndDeepChildrenCategory(categoryId);
+        return categoryService.selectCategoryAndDeepChildrenCategory(categoryId);
     }
 }
