@@ -1,11 +1,8 @@
 package net.imain.service.impl;
 
-import net.imain.common.Const;
-import net.imain.common.HandlerConverter;
+import net.imain.common.*;
 import net.imain.enums.HandlerEnum;
 import net.imain.enums.UserEnum;
-import net.imain.common.HandlerResult;
-import net.imain.common.TokenCache;
 import net.imain.dao.UserMapper;
 import net.imain.pojo.User;
 import net.imain.service.IUserService;
@@ -167,6 +164,10 @@ public class IUserServiceImpl implements IUserService {
     @Override
     public HandlerResult<String> resetPassword(UserInfoVo userInfoVo,
                                                String passwordOld, String passwordNew) {
+        // 判空
+        if (StringUtils.isBlank(passwordOld) || StringUtils.isBlank(passwordNew)) {
+            return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
+        }
         // UserInfoVo -> User
         User user = HandlerConverter.userInfoToUser(userInfoVo);
         // 防止横向越权，要校验一下用户的旧密码，密码一定要记得是MD5加密后的

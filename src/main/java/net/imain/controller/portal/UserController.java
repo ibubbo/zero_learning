@@ -79,12 +79,14 @@ public class UserController {
     @RequestMapping(value = "get_user_info.do", method = RequestMethod.GET)
     @ResponseBody
     public HandlerResult<UserInfoVo> getUserInfo(HttpSession session) {
-        UserInfoVo user = (UserInfoVo) session.getAttribute(Const.CURRENT_USER);
-        if (user == null) {
-            return HandlerResult.error(UserEnum.NEED_LOGIN.getMessage());
+        // 检验用户是否登录
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session, true);
+        if (!handlerResult.isSuccess()) {
+            return handlerResult;
         }
-
-        return HandlerResult.success(user);
+        // 获取用户信息
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+        return HandlerResult.success(userInfoVo);
     }
 
     /**
@@ -124,11 +126,14 @@ public class UserController {
     @ResponseBody
     public HandlerResult<String> resetPassword(HttpSession session,
                                                String passwordOld, String passwordNew) {
-        UserInfoVo user = (UserInfoVo) session.getAttribute(Const.CURRENT_USER);
-        if (user == null) {
-            return HandlerResult.error(UserEnum.NEED_LOGIN.getMessage());
+        // 检验用户是否登录
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session, true);
+        if (!handlerResult.isSuccess()) {
+            return handlerResult;
         }
-        return iUserService.resetPassword(user, passwordOld, passwordNew);
+        // 获取用户信息
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+        return iUserService.resetPassword(userInfoVo, passwordOld, passwordNew);
     }
 
     /**
@@ -137,10 +142,13 @@ public class UserController {
     @RequestMapping(value = "update_information.do", method = RequestMethod.GET)
     @ResponseBody
     public HandlerResult<User> updateInformation(HttpSession session, User user) {
-        UserInfoVo userInfoVo = (UserInfoVo) session.getAttribute(Const.CURRENT_USER);
-        if (userInfoVo == null) {
-            return HandlerResult.error(UserEnum.NEED_LOGIN.getMessage());
+        // 检验用户是否登录
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session, true);
+        if (!handlerResult.isSuccess()) {
+            return handlerResult;
         }
+        // 获取用户信息
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
         // 补全信息
         user.setId(userInfoVo.getId());
         // 更新
@@ -158,11 +166,13 @@ public class UserController {
     @RequestMapping(value = "get_information.do", method = RequestMethod.GET)
     @ResponseBody
     public HandlerResult<User> getInformation(HttpSession session) {
-        UserInfoVo userInfoVo = (UserInfoVo) session.getAttribute(Const.CURRENT_USER);
-        if (userInfoVo == null) {
-            return HandlerResult.error(UserEnum.NEED_LOGIN.getCode(), UserEnum.NEED_LOGIN.getMessage());
+        // 检验用户是否登录
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session, true);
+        if (!handlerResult.isSuccess()) {
+            return handlerResult;
         }
-
+        // 获取用户信息
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
         return iUserService.getInformation(userInfoVo.getId());
     }
 }
