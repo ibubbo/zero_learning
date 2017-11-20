@@ -9,28 +9,41 @@ import java.util.Date;
  * @author uncle
  */
 public class Product {
+
+    /** 商品id .*/
     private Integer id;
 
+    /** 分类id .*/
     private Integer categoryId;
 
+    /** 商品名称 .*/
     private String name;
 
+    /** 商品负标题 .*/
     private String subtitle;
 
+    /** 商品主图 .*/
     private String mainImage;
 
+    /** 图片地址（JSON） .*/
     private String subImages;
 
+    /** 商品详情 .*/
     private String detail;
 
+    /** 商品价格：单位元，保留两位小数 .*/
     private BigDecimal price;
 
+    /** 库存数量 .*/
     private Integer stock;
 
+    /** 商品状态：1.在售  2.下架  3.删除 .*/
     private Integer status;
 
+    /** 创建时间 .*/
     private Date createTime;
 
+    /** 更新时间 .*/
     private Date updateTime;
 
     public Product(Integer id, Integer categoryId, String name, String subtitle, String mainImage, String subImages, String detail, BigDecimal price, Integer stock, Integer status, Date createTime, Date updateTime) {
