@@ -1,19 +1,28 @@
 package net.imain.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import net.imain.common.HandlerCheck;
+import net.imain.common.HandlerConverter;
 import net.imain.common.HandlerResult;
 import net.imain.dao.CategoryMapper;
 import net.imain.dao.ProductMapper;
 import net.imain.enums.CategoryEnum;
 import net.imain.enums.HandlerEnum;
 import net.imain.enums.ProductEnum;
+import net.imain.pojo.Category;
 import net.imain.pojo.Product;
 import net.imain.service.ProductService;
+import net.imain.vo.ProductDetailVo;
+import net.imain.vo.ProductListVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author: uncle
@@ -27,6 +36,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private CategoryMapper categoryMapper;
+
     /**
      * 新增和保存
      */
@@ -37,8 +47,8 @@ public class ProductServiceImpl implements ProductService {
             return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
         }
         // 校验分类ID
-        Integer resultSum = categoryMapper.checkCategoryByPrimaryKey(product.getCategoryId());
-        if (resultSum == 0) {
+        Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
+        if (HandlerCheck.ObjectIsEmpty(category)) {
             return HandlerResult.error(CategoryEnum.CATEGORY_ID_NOT_EXIST.getMessage());
         }
         // 设置主图
@@ -56,9 +66,12 @@ public class ProductServiceImpl implements ProductService {
             }
             return HandlerResult.success(HandlerEnum.SUCCESS.getMessage());
         }
+        // 判断商品状态是否为空，不为空默认 = 1 上架
+        Integer orStatus = Optional.of(product)
+                .map(pro -> pro.getStatus())
+                .orElse(1);
         // 添加商品信息
-        boolean isEmpty = HandlerCheck.NumIsEmpty(product.getStatus());
-        product.setStatus(isEmpty ? 1 : product.getStatus());
+        product.setStatus(orStatus);
         int insertProduct = productMapper.insert(product);
         if (insertProduct == 0) {
             return HandlerResult.error(ProductEnum.SAVE_ERROR.getMessage());
@@ -69,10 +82,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public HandlerResult<String> setSaleStatus(Integer productId, Integer status) {
         // 数据校验
-        boolean b = HandlerCheck.NumIsEmpty(productId);
-        boolean b1 = HandlerCheck.NumIsEmpty(status);
-
-        if (HandlerCheck.NumIsEmpty(productId) && HandlerCheck.NumIsEmpty(status)) {
+        if (HandlerCheck.NumIsEmpty(productId) || HandlerCheck.NumIsEmpty(status)) {
             return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getCode(),
                     HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
         }
@@ -88,12 +98,54 @@ public class ProductServiceImpl implements ProductService {
         return HandlerResult.success(HandlerEnum.SUCCESS.getMessage());
     }
 
-    public HandlerResult<Product> getDetail(Integer productId) {
+    @Override
+    public HandlerResult<ProductDetailVo> manageProductDatail(Integer productId) {
         // 数据校验
         if (HandlerCheck.NumIsEmpty(productId)) {
             return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getCode(),
                     HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
         }
-        return null;
+        // 查询商品信息
+        Product product = productMapper.selectByPrimaryKey(productId);
+        if (HandlerCheck.ObjectIsEmpty(product)) {
+            return HandlerResult.error(ProductEnum.PRODUCT_NOT_EXIST.getMessage());
+        }
+        // 补全商品信息
+        Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
+        ProductDetailVo productDetailVo = HandlerConverter.productToProductVo(product);
+        productDetailVo.setParentCategoryId(
+                Optional.ofNullable(category).isPresent() ? category.getParentId() : 0
+        );
+        // 返回
+        return HandlerResult.success(productDetailVo);
+    }
+
+    @Override
+    public HandlerResult<PageInfo> list(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<ProductListVo> productListVos = productMapper.findAll().stream()
+                .map(product ->
+                        HandlerConverter.productToProductListVo(product)
+                ).collect(Collectors.toList());
+        PageInfo<ProductListVo> pageInfo = new PageInfo<>(productListVos);
+        return HandlerResult.success(pageInfo);
+    }
+
+    @Override
+    public HandlerResult<PageInfo> search(String productName, Integer productId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        if (StringUtils.isNotBlank(productName)) {
+            productName = new StringBuilder().append("%").append(productName).append("%").toString();
+        }
+        List<ProductListVo> listVos = productMapper.selectByNameAndPrimaryKey(productId, productName).stream()
+                .map(product -> {
+                    ProductListVo productListVo = HandlerConverter.productToProductListVo(product);
+                    // 转换完之后将商品状态置空
+                    productListVo.setStatus(null);
+                    return productListVo;
+                })
+                .collect(Collectors.toList());
+        PageInfo pageInfo = new PageInfo(listVos);
+        return HandlerResult.success(pageInfo);
     }
 }

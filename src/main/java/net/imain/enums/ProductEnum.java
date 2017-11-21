@@ -9,7 +9,9 @@ package net.imain.enums;
 public enum ProductEnum {
     SAVE_ERROR(100, "添加失败"),
 
-    UPDATE_ERROR(101, "更新失败")
+    UPDATE_ERROR(101, "更新失败"),
+
+    PRODUCT_NOT_EXIST(102, "商品不存在")
     ;
 
     private final Integer code;

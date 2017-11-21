@@ -15,7 +15,6 @@ import java.io.Serializable;
 public class HandlerResult<T> implements Serializable {
     private Integer status;
     private String msg;
-    // 这是声明此类的data字段可以是任意类型
     private T data;
 
     private HandlerResult(Integer status) {

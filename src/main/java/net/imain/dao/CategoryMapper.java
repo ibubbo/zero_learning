@@ -63,12 +63,4 @@ public interface CategoryMapper {
      * @return
      */
     List<Category> selectCategoryChildrenByParentId(Integer parentId);
-
-    /**
-     * 校验分类ID是否存在
-     *
-     * @param id
-     * @return
-     */
-    Integer checkCategoryByPrimaryKey(Integer id);
 }

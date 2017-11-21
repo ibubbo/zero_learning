@@ -125,8 +125,4 @@
     <select id="selectCategoryChildrenByParentId" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/> from mmall_category where parent_id = #{parentId}
   </select>
-
-    <select id="checkCategoryByPrimaryKey" resultType="integer">
-        select count(1) from mmall_category where id = #{id}
-    </select>
 </mapper>
