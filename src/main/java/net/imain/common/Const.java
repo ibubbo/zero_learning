@@ -17,8 +17,6 @@ public class Const {
 
     public static final String TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
-
-
     public static final String DEFAULT_VALUE = "http://img.happymmall.com/";
     /**
      * 角色接口：

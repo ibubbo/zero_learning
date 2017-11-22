@@ -1,6 +1,8 @@
 package net.imain.util;
 
+import com.google.common.base.Splitter;
 import net.imain.common.Const;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -86,13 +89,17 @@ public class FTPUtil {
     }
 
     /**
-     * connection ftp
+     * connect ftp
+     *
+     * @param fileList Files that need to be upload
+     * @param newPath File storage path
+     * @return true is success, false is error
+     * @throws IOException
      */
-    public static boolean uploadFile(List<File> fileList, String newPath) throws IOException {
+    public static boolean uploadFile(List<File> fileList, String imgPath) throws IOException {
         FTPUtil ftpUtil = new FTPUtil(ftpIp, Const.Ftp.PORT, ftpUser, ftpPass);
         // uploading
-        boolean flag = ftpUtil.uploadFile(filePath, fileList, newPath);
-        return flag;
+        return ftpUtil.uploadFile(filePath, fileList, imgPath);
     }
 
     /**
@@ -102,25 +109,35 @@ public class FTPUtil {
      * @param fileList
      * @return true is success, false is error.
      */
-    private boolean uploadFile(String remotePath, List<File> fileList, String newPath) throws IOException {
+    private boolean uploadFile(String remotePath, List<File> fileList, String imgPath) throws IOException {
         boolean success = true;
         FileInputStream fis = null;
-        if (connectServer(ip, port, user, password)) { // 判断连接是否有效
+        if (connectServer(ip, port, user, password)) {
             try {
-                // Move to the FTP server directory 切换到ftp的文件路径上
-                File fileDir = new File("/2020/20/20/");
-                if (!fileDir.exists()) {
-                    // give writable permissions
-                    fileDir.setWritable(true);
-                    fileDir.mkdirs();
+                // Move to the FTP server directory
+                if (!ftpClient.changeWorkingDirectory(remotePath + imgPath)) {
+                    String[] path = imgPath.split("/");
+                    for (String dir : path) {
+                        if (StringUtils.isNotBlank(dir)) {
+                            remotePath += "/" + dir;
+                            if (!ftpClient.changeWorkingDirectory(remotePath)) {
+                                if (!ftpClient.makeDirectory(remotePath)) {
+                                    success = false;
+                                    logger.error("changeWorkingDirectory exception");
+                                    return success;
+                                }
+                                ftpClient.changeWorkingDirectory(remotePath);
+                            }
+                        }
+                    }
                 }
-                ftpClient.changeWorkingDirectory(remotePath);
                 // create directory
-                // 设置缓冲区：1024 | 编码：utf-8 | 文件类型：二进制 | 打开本地的被动模式
+                // ↓ set buffer：1024 | encode：utf-8 | file type：binary | open the local passive mode
                 ftpClient.setBufferSize(1024);
                 ftpClient.setControlEncoding("UTF-8");
                 ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
                 ftpClient.enterLocalActiveMode();
+                // ↑ set end...
                 // Formal upload
                 for (File file : fileList) {
                     fis = new FileInputStream(file);

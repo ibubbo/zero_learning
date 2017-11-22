@@ -11,8 +11,9 @@ public interface FileService {
      * Upload file
      *
      * @param file
-     * @param path
+     * @param imgPath The file on the server path
+     * @param localPath The file on the local path
      * @return file name
      */
-    String upload(MultipartFile file, String path);
+    String upload(MultipartFile file, String imgPath, String localPath);
 }

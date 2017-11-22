@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
@@ -22,32 +21,29 @@ public class FileServiceImpl implements FileService {
     private static Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
     @Override
-    public String upload(MultipartFile file, String path) {
-        // 1.拼接文件名
+    public String upload(MultipartFile file, String imgPath, String localPath) {
+        // 1.Splicing file name
         String fileName = file.getOriginalFilename();
         String suffix = fileName.substring(fileName.lastIndexOf("."));
         // rename file name after upload
         String uploadFileName = UUID.randomUUID() + suffix;
         logger.info("upload start file, file name upload: {}, file name after upload: {}, upload path: {}",
-                fileName, uploadFileName, path);
+                fileName, uploadFileName, localPath);
 
-        // 2.创建文件 path = /2017/11/21
-//        File fileDir = new File(path);
-//        // create directory
-//        if (!fileDir.exists()) {
-//            // give writable permissions
-//            fileDir.setWritable(true);
-//            fileDir.mkdirs();
-//        }
-        // create file: path + uploadFileName, 3.此时路径 + 文件已经准备就绪
-        File targetFile = new File(path, uploadFileName);
-
+        // 2.create local folder
+        File fileDir = new File(localPath);
+        if (!fileDir.exists()) {
+            // give writable permissions
+            fileDir.setWritable(true);
+            fileDir.mkdirs();
+        }
+        // 3.create local file: path + uploadFileName
+        File targetFile = new File(localPath, uploadFileName);
         try {
-            // copy file
+            // copy file, file -> targetFile(file shadow)
             file.transferTo(targetFile);
-            // TODO upload files to ftp server 4.上传
-            FTPUtil.uploadFile(Lists.newArrayList(targetFile), path);
-            // TODO When done, delete the files under the upload folder， 删除
+            FTPUtil.uploadFile(Lists.newArrayList(targetFile), imgPath);
+            // remove local file
             targetFile.delete();
         } catch (IOException e) {
             logger.error("file upload exception: {}", e);

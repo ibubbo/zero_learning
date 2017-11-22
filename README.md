@@ -1,1 +1,1 @@
-mmall_learning
+**Happy shopping platform**

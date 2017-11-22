@@ -130,12 +130,10 @@ public class ProductManageController {
             return handlerResult;
         }
         // path, rename folder(folder name is "upload")
-        // /webapp/upload -> C:\\Users\\Administrator\\Desktop\\mmall\\target\\mmall\\upload
-//        String path = request.getSession().getServletContext().getRealPath("upload");
-//        System.out.println(path);
-        String imgPath = new DateTime().toString("/yyyy/MM/dd/");
-        String fileName = fileService.upload(file, imgPath);
-        String url = PropertiesUtil.getProperties(Const.Ftp.FTP_SERVER_HTTP_PREFIX_KEY) + "img/" + fileName;
+        String localPath = request.getSession().getServletContext().getRealPath("upload");
+        String imgPath = new DateTime().toString("/yyyy/MM/dd");
+        String fileName = fileService.upload(file, imgPath, localPath);
+        String url = PropertiesUtil.getProperties(Const.Ftp.FTP_SERVER_HTTP_PREFIX_KEY) + imgPath + "/" + fileName;
         Map fileMap = Maps.newHashMap();
         fileMap.put("uri", fileName);
         fileMap.put("url", url);
