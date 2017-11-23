@@ -1,6 +1,9 @@
 package net.imain.dao;
 
 import net.imain.pojo.Cart;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 购物车接口层
@@ -55,4 +58,30 @@ public interface CartMapper {
      * @return 修改成功的数量
      */
     int updateByPrimaryKey(Cart record);
+
+    /**
+     * 根据用户ID和产品ID查询购物车
+     *
+     * @param userId
+     * @param productId
+     * @return
+     */
+    Cart selectCartByUserIdAndProductId(@Param(value = "userId") Integer userId,
+                                        @Param(value = "productId") Integer productId);
+
+    /**
+     * 根据用户ID得到用户的购物车
+     *
+     * @param userId
+     * @return
+     */
+    List<Cart> selectCartByUserId(Integer userId);
+
+    /**
+     * 根据用户ID查询商品选择状态
+     *
+     * @param userId
+     * @return
+     */
+    int selectCartProductCheckedStautsByUserId(Integer userId);
 }

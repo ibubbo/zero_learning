@@ -11,7 +11,9 @@ public enum ProductEnum {
 
     UPDATE_ERROR(101, "更新失败"),
 
-    PRODUCT_NOT_EXIST(102, "商品不存在")
+    PRODUCT_NOT_EXIST(102, "商品不存在"),
+
+    PRODUCT_HAS_REMOVED(103, "产品已经下架")
     ;
 
     private final Integer code;

@@ -1,5 +1,7 @@
 package net.imain.pojo;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 

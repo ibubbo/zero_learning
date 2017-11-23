@@ -9,7 +9,7 @@
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <!-- 配置包扫描器   -->
-    <context:component-scan base-package="net.imain" annotation-config="true"/>
+    <context:component-scan base-package="net.imain.controller" annotation-config="true"/>
 
     <mvc:annotation-driven>
         <mvc:message-converters>

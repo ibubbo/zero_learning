@@ -34,4 +34,7 @@ public interface ProductMapper {
      */
     List<Product> selectByNameAndPrimaryKey(@Param(value = "productId") Integer productId,
                                             @Param(value = "productName") String productName);
+
+    List<Product> selectByNameAndCategoryIds(@Param(value = "productName") String productName,
+                                             @Param(value = "categoryIdList") List<Integer> categoryIdList);
 }

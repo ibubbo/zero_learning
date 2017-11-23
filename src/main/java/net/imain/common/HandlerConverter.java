@@ -38,7 +38,7 @@ public class HandlerConverter {
      * @param product Product information
      * @return ProductVo
      */
-    public static ProductDetailVo productToProductVo(Product product) {
+    public static ProductDetailVo productToProductDetailVo(Product product) {
         ProductDetailVo vo = new ProductDetailVo();
         BeanUtils.copyProperties(product, vo);
         vo.setImageHost(PropertiesUtil.getProperties(Const.Ftp.FTP_SERVER_HTTP_PREFIX_KEY, Const.DEFAULT_VALUE));
