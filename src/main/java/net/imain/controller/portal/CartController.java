@@ -1,5 +1,6 @@
 package net.imain.controller.portal;
 
+import com.google.common.collect.Lists;
 import net.imain.common.HandlerCheck;
 import net.imain.common.HandlerResult;
 import net.imain.service.CartService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * @author: uncle
@@ -32,6 +34,51 @@ public class CartController {
             return handlerResult;
         }
         UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
-        return cartService.add(productId, count, userInfoVo.getId());
+        return cartService.saveOrUpdate(userInfoVo.getId(), productId, count);
     }
+
+    @RequestMapping(value = "list.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult list(HttpSession session) {
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
+        if (!handlerResult.isSuccess()) {
+            return handlerResult;
+        }
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+        return cartService.list(userInfoVo.getId());
+    }
+
+    @RequestMapping(value = "update.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult update(HttpSession session, Integer productId, Integer count) {
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
+        if (!handlerResult.isSuccess()) {
+            return handlerResult;
+        }
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+        return cartService.update(userInfoVo.getId(), productId, count);
+    }
+
+    @RequestMapping(value = "delete_product.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult delete(HttpSession session, String productIds) {
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
+        if (!handlerResult.isSuccess()) {
+            return handlerResult;
+        }
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+        return cartService.delete(userInfoVo.getId(), productIds);
+    }
+
+   /* @RequestMapping(value = "addTwo.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult addTwo(Integer productId, Integer count, HttpSession session) {
+        // check user is null
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
+        if (!handlerResult.isSuccess()) {
+            return handlerResult;
+        }
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+        return cartService.addTwo(userInfoVo.getId(), productId, count);
+    }*/
 }

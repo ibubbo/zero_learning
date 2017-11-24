@@ -83,5 +83,15 @@ public interface CartMapper {
      * @param userId
      * @return
      */
-    int selectCartProductCheckedStautsByUserId(Integer userId);
+    int selectCartProductCheckedStatusByUserId(Integer userId);
+
+    /**
+     * 根据商品ID删除用户购物车
+     *
+     * @param productIdList
+     * @param userId
+     * @return
+     */
+    int deleteCartByProductIds(@Param(value = "productIdList") List<String> productIdList,
+                               @Param(value = "userId") Integer userId);
 }
