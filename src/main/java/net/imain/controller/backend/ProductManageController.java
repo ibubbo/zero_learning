@@ -172,5 +172,4 @@ public class ProductManageController {
 
         return map;
     }
-
 }

@@ -94,4 +94,7 @@ public interface CartMapper {
      */
     int deleteCartByProductIds(@Param(value = "productIdList") List<String> productIdList,
                                @Param(value = "userId") Integer userId);
+
+    List<Cart> selectCartByUserIdAndProductIds(@Param(value = "productIdList") List<String> productIdList,
+                                    @Param(value = "userId") Integer userId);
 }

@@ -138,4 +138,14 @@
       </foreach>
     </if>
   </delete>
+
+  <select id="selectCartByUserIdAndProductIds" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from mmall_cart where user_id = #{userId}
+    <if test="productIdList != null">
+      and product_id in
+      <foreach collection="productIdList" open="(" close=")" separator="," item="item">
+        #{item}
+      </foreach>
+    </if>
+  </select>
 </mapper>

@@ -70,15 +70,14 @@ public class CartController {
         return cartService.delete(userInfoVo.getId(), productIds);
     }
 
-   /* @RequestMapping(value = "addTwo.do", method = RequestMethod.GET)
+    @RequestMapping(value = "select.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult addTwo(Integer productId, Integer count, HttpSession session) {
-        // check user is null
+    public HandlerResult updateProductChecked(HttpSession session, String productId) {
         HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
         if (!handlerResult.isSuccess()) {
             return handlerResult;
         }
         UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
-        return cartService.addTwo(userInfoVo.getId(), productId, count);
-    }*/
+        return null;
+    }
 }

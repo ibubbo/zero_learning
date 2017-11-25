@@ -136,14 +136,35 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public HandlerResult delete(Integer userId, String productIds) {
+        // 用来存放修改后的商品库存
+        List<Product> products = Lists.newArrayList();
         if (HandlerCheck.ObjectIsEmpty(productIds)) {
             return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getCode(),
                     HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
         }
         List<String> productIdList = Splitter.on(",").splitToList(productIds);
+        // TODO 删除之前，得到这些商品在购物车中的数量
+        List<Cart> cartList = cartMapper.selectCartByUserIdAndProductIds(productIdList, userId);
+        List<Product> productList = productMapper.selectProductByProductIds(productIdList);
+        for (Cart cartItem : cartList) {
+            for (Product productItem: productList) {
+                if (cartItem.getProductId().equals(productItem.getId())) {
+                    productItem.setStock(productItem.getStock() + cartItem.getQuantity());
+                    products.add(productItem);
+                }
+            }
+        }
+        productMapper.updateProductStockList(products);
+        // 分别添加给商品库存添加对应的数量
         cartMapper.deleteCartByProductIds(productIdList, userId);
         CartResultVo cartResultVoLimit = getCartResultVoLimit(userId);
         return HandlerResult.success(cartResultVoLimit);
+    }
+
+
+    public HandlerResult<CartResultVo> updateProductChecked() {
+
+        return null;
     }
 
     /**
