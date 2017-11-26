@@ -110,8 +110,8 @@ public class CartServiceImpl implements CartService {
         // 查询购物车
         Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
         productStock = product.getStock();
-        oldCartKu = cart.getQuantity();
         if (HandlerCheck.ObjectIsNotEmpty(cart)) {
+            oldCartKu = cart.getQuantity();
 
             // 更新准备
             int value = count - oldCartKu;
@@ -136,35 +136,77 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public HandlerResult delete(Integer userId, String productIds) {
-        // 用来存放修改后的商品库存
-        List<Product> products = Lists.newArrayList();
+
         if (HandlerCheck.ObjectIsEmpty(productIds)) {
             return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getCode(),
                     HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
         }
         List<String> productIdList = Splitter.on(",").splitToList(productIds);
-        // TODO 删除之前，得到这些商品在购物车中的数量
         List<Cart> cartList = cartMapper.selectCartByUserIdAndProductIds(productIdList, userId);
         List<Product> productList = productMapper.selectProductByProductIds(productIdList);
         for (Cart cartItem : cartList) {
-            for (Product productItem: productList) {
+            for (Product productItem : productList) {
                 if (cartItem.getProductId().equals(productItem.getId())) {
                     productItem.setStock(productItem.getStock() + cartItem.getQuantity());
-                    products.add(productItem);
                 }
             }
         }
-        productMapper.updateProductStockList(products);
+
+        productMapper.updateProductStockList(productList);
         // 分别添加给商品库存添加对应的数量
         cartMapper.deleteCartByProductIds(productIdList, userId);
         CartResultVo cartResultVoLimit = getCartResultVoLimit(userId);
         return HandlerResult.success(cartResultVoLimit);
     }
 
+    @Override
+    public HandlerResult<CartResultVo> selectAllOrUnSelectAll(Integer userId, boolean isSelectAll) {
+        List<Cart> cartList = cartMapper.selectCartByUserId(userId);
+        if (HandlerCheck.ObjectIsNotEmpty(cartList)) {
+            if (isSelectAll) {
+                // 全选
+                for (Cart cartItem : cartList) {
+                    if (cartItem.getChecked() == Const.Cart.UNCHECKED) {
+                        cartItem.setChecked(Const.Cart.CHECKED);
+                    }
+                }
+            } else {
+                // 全不选
+                for (Cart cartItem : cartList) {
+                    if (cartItem.getChecked() == Const.Cart.CHECKED) {
+                        cartItem.setChecked(Const.Cart.UNCHECKED);
+                    }
+                }
+            }
+        }
+        // 批量修改
+        cartMapper.updateCartProductCheckedIsSelectAll(cartList);
+        CartResultVo cartResultVoLimit = getCartResultVoLimit(userId);
+        return HandlerResult.success(cartResultVoLimit);
+    }
 
-    public HandlerResult<CartResultVo> updateProductChecked() {
+    @Override
+    public HandlerResult<CartResultVo> selectOrUnSelect(Integer userId, Integer productId, boolean isSelect) {
+        Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
+        if (HandlerCheck.ObjectIsNotEmpty(cart)) {
+            // 选
+            if (isSelect) {
+                cart.setChecked(Const.Cart.CHECKED);
+            } else {
+            // 不选
+                cart.setChecked(Const.Cart.UNCHECKED);
+            }
+        }
+        // 修改
+        cartMapper.updateCartProductCheckedIsSelect(productId, cart.getChecked(), userId);
+        CartResultVo cartResultVoLimit = getCartResultVoLimit(userId);
+        return HandlerResult.success(cartResultVoLimit);
+    }
 
-        return null;
+    @Override
+    public HandlerResult<Integer> getCartProductCount(Integer userId) {
+        // TODO 是否需要考虑选中状态
+        return HandlerResult.success(cartMapper.selectCartProductCount(userId));
     }
 
     /**

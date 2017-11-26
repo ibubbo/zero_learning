@@ -1,6 +1,5 @@
 package net.imain.controller.portal;
 
-import com.google.common.collect.Lists;
 import net.imain.common.HandlerCheck;
 import net.imain.common.HandlerResult;
 import net.imain.service.CartService;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * @author: uncle
@@ -70,14 +68,60 @@ public class CartController {
         return cartService.delete(userInfoVo.getId(), productIds);
     }
 
+    // 单选
     @RequestMapping(value = "select.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult updateProductChecked(HttpSession session, String productId) {
+    public HandlerResult select(HttpSession session, Integer productId) {
         HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
         if (!handlerResult.isSuccess()) {
             return handlerResult;
         }
         UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
-        return null;
+        return cartService.selectOrUnSelect(userInfoVo.getId(), productId, true);
+    }
+
+    @RequestMapping(value = "un_select.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult unSelect(HttpSession session, Integer productId) {
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
+        if (!handlerResult.isSuccess()) {
+            return handlerResult;
+        }
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+        return cartService.selectOrUnSelect(userInfoVo.getId(), productId, false);
+    }
+
+    // 全选
+    @RequestMapping(value = "select_all.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult selectAll(HttpSession session) {
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
+        if (!handlerResult.isSuccess()) {
+            return handlerResult;
+        }
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+        return cartService.selectAllOrUnSelectAll(userInfoVo.getId(), true);
+    }
+
+    @RequestMapping(value = "un_select_all.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult unSelectAll(HttpSession session) {
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
+        if (!handlerResult.isSuccess()) {
+            return handlerResult;
+        }
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+        return cartService.selectAllOrUnSelectAll(userInfoVo.getId(), false);
+    }
+
+    @RequestMapping(value = "get_cart_product_count.do", method = RequestMethod.GET)
+    @ResponseBody
+    public HandlerResult getCartProductCount(HttpSession session) {
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
+        if (!handlerResult.isSuccess()) {
+            return HandlerResult.success(0);
+        }
+        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+        return cartService.getCartProductCount(userInfoVo.getId());
     }
 }
