@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
         if (product.getId() != null) {
             int updateProduct = productMapper.updateByPrimaryKeySelective(product);
             if (updateProduct == 0) {
-                return HandlerResult.error(ProductEnum.UPDATE_ERROR.getMessage());
+                return HandlerResult.error(ProductEnum.PRODUCT_UPDATE_ERROR.getMessage());
             }
             return HandlerResult.success(HandlerEnum.SUCCESS.getMessage());
         }
@@ -78,7 +78,7 @@ public class ProductServiceImpl implements ProductService {
         product.setStatus(orStatus);
         int insertProduct = productMapper.insert(product);
         if (insertProduct == 0) {
-            return HandlerResult.error(ProductEnum.SAVE_ERROR.getMessage());
+            return HandlerResult.error(ProductEnum.PRODUCT_SAVE_ERROR.getMessage());
         }
         return HandlerResult.success(HandlerEnum.SUCCESS.getMessage());
     }
@@ -97,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
         // 更新信息
         int updateSum = productMapper.updateByPrimaryKeySelective(product);
         if (updateSum == 0) {
-            return HandlerResult.error(ProductEnum.UPDATE_ERROR.getMessage());
+            return HandlerResult.error(ProductEnum.PRODUCT_UPDATE_ERROR.getMessage());
         }
         return HandlerResult.success(HandlerEnum.SUCCESS.getMessage());
     }

@@ -10,16 +10,6 @@ import net.imain.vo.CartResultVo;
 public interface CartService {
 
     /**
-     * 添加购物车
-     *
-     * @param productId
-     * @param count
-     * @param userId
-     * @return
-     */
-//    HandlerResult<CartResultVo> add(Integer productId, Integer count, Integer userId);
-
-    /**
      * 获取用户购物车信息
      *
      * @param userId
@@ -82,4 +72,5 @@ public interface CartService {
      * @return
      */
     HandlerResult<Integer> getCartProductCount(Integer userId);
+
 }

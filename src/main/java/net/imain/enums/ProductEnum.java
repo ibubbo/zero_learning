@@ -7,13 +7,13 @@ package net.imain.enums;
  * @apdateTime: 2017-11-20 13:29
  */
 public enum ProductEnum {
-    SAVE_ERROR(100, "添加失败"),
+    PRODUCT_SAVE_ERROR(100, "商品添加失败"),
 
-    UPDATE_ERROR(101, "更新失败"),
+    PRODUCT_UPDATE_ERROR(101, "商品更新失败"),
 
     PRODUCT_NOT_EXIST(102, "商品不存在"),
 
-    PRODUCT_HAS_REMOVED(103, "产品已经下架")
+    PRODUCT_HAS_REMOVED(103, "商品已经下架")
     ;
 
     private final Integer code;

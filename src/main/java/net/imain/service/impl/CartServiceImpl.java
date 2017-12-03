@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -126,7 +125,7 @@ public class CartServiceImpl implements CartService {
             productMapper.updateByPrimaryKeySelective(product);
             int updateByPrimaryKeySelective = cartMapper.updateByPrimaryKeySelective(cart);
             if (updateByPrimaryKeySelective == 0) {
-                return HandlerResult.error(ProductEnum.UPDATE_ERROR.getMessage());
+                return HandlerResult.error(ProductEnum.PRODUCT_UPDATE_ERROR.getMessage());
             }
         }
         // 格式转换
@@ -193,7 +192,7 @@ public class CartServiceImpl implements CartService {
             if (isSelect) {
                 cart.setChecked(Const.Cart.CHECKED);
             } else {
-            // 不选
+                // 不选
                 cart.setChecked(Const.Cart.UNCHECKED);
             }
         }
