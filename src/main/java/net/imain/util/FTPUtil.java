@@ -1,7 +1,7 @@
 package net.imain.util;
 
-import com.google.common.base.Splitter;
-import net.imain.common.Const;
+import net.imain.common.Constants;
+import net.imain.common.HandlerCheck;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -23,13 +22,13 @@ public class FTPUtil {
 
     private static Logger logger = LoggerFactory.getLogger(FTPUtil.class);
 
-    private static String ftpIp = PropertiesUtil.getProperties(Const.Ftp.FTP_IP_KEY);
+    private static String ftpIp = PropertiesUtil.getProperties(Constants.Ftp.FTP_IP_KEY);
 
-    private static String ftpUser = PropertiesUtil.getProperties(Const.Ftp.FTP_USER_KEY);
+    private static String ftpUser = PropertiesUtil.getProperties(Constants.Ftp.FTP_USER_KEY);
 
-    private static String ftpPass = PropertiesUtil.getProperties(Const.Ftp.FTP_PASS);
+    private static String ftpPass = PropertiesUtil.getProperties(Constants.Ftp.FTP_PASS);
 
-    private static String filePath = PropertiesUtil.getProperties(Const.Ftp.FTP_FILEPATH);
+    private static String filePath = PropertiesUtil.getProperties(Constants.Ftp.FTP_FILEPATH);
 
     private String ip;
 
@@ -92,12 +91,12 @@ public class FTPUtil {
      * connect ftp
      *
      * @param fileList Files that need to be upload
-     * @param newPath File storage path
+     * @param imgPath File storage path
      * @return true is success, false is error
      * @throws IOException
      */
     public static boolean uploadFile(List<File> fileList, String imgPath) throws IOException {
-        FTPUtil ftpUtil = new FTPUtil(ftpIp, Const.Ftp.PORT, ftpUser, ftpPass);
+        FTPUtil ftpUtil = new FTPUtil(ftpIp, Constants.Ftp.PORT, ftpUser, ftpPass);
         // uploading
         return ftpUtil.uploadFile(filePath, fileList, imgPath);
     }
@@ -147,7 +146,8 @@ public class FTPUtil {
                 success = false;
                 logger.error("upload exception: {}", e);
             } finally {
-                fis.close();
+                if (HandlerCheck.ObjectIsEmpty(fis))
+                    fis.close();
                 ftpClient.disconnect();
             }
         }

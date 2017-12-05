@@ -1,6 +1,6 @@
 package net.imain.controller.backend;
 
-import net.imain.common.Const;
+import net.imain.common.Constants;
 import net.imain.common.HandlerResult;
 import net.imain.enums.UserEnum;
 import net.imain.service.UserService;
@@ -34,11 +34,11 @@ public class UserManageController {
         HandlerResult<UserInfoVo> userInfo = userService.login(username, password);
         if (userInfo.isSuccess()) {
             UserInfoVo user = userInfo.getData();
-            if (!(user.getRole() == Const.Role.ROLE_ADMIN)) {
+            if (!(user.getRole() == Constants.Role.ROLE_ADMIN)) {
                 return HandlerResult.error(UserEnum.IS_NOT_ADMIN.getMessage());
             }
             // 说明登录的是管理员
-            session.setAttribute(Const.CURRENT_USER, user);
+            session.setAttribute(Constants.CURRENT_USER, user);
         }
         return userInfo;
     }

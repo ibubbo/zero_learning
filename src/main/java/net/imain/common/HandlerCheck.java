@@ -3,9 +3,9 @@ package net.imain.common;
 import net.imain.enums.UserEnum;
 import net.imain.service.UserService;
 import net.imain.vo.UserInfoVo;
-
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -59,7 +59,7 @@ public class HandlerCheck {
     public static HandlerResult checkUserIsPresent(HttpSession session) {
         // 判断用户是否登录
         Optional<UserInfoVo> userInfoVo =
-                Optional.ofNullable(((UserInfoVo) session.getAttribute(Const.CURRENT_USER)));
+                Optional.ofNullable(((UserInfoVo) session.getAttribute(Constants.CURRENT_USER)));
         if (!userInfoVo.isPresent()) {
             return HandlerResult.error(UserEnum.NEED_LOGIN.getCode(), UserEnum.NEED_LOGIN.getMessage());
         }
@@ -77,6 +77,10 @@ public class HandlerCheck {
         return !(Optional.ofNullable(bean).isPresent());
     }
 
+    public static <N> boolean NumIsNotEmpty(N bean) {
+        return Optional.ofNullable(bean).isPresent();
+    }
+
     /**
      * Object Judgment
      *
@@ -88,6 +92,12 @@ public class HandlerCheck {
         Optional<T> optional = Optional.ofNullable(bean);
         if (!optional.isPresent() || "".equals(bean)) {
             return true;
+        }
+        if (bean instanceof Collection) {
+            if (((Collection) bean).size() <= 0) {
+                return true;
+            }
+            return false;
         }
         Class<?> aClass = bean.getClass();
         Method[] methods = aClass.getDeclaredMethods();
@@ -110,12 +120,7 @@ public class HandlerCheck {
         return true;
     }
 
-    public static void main(String[] args) {
-        Integer integer = 100;
-        if (NumIsEmpty(integer)) {
-            System.out.println("不是空");
-        } else {
-            System.out.println("空");
-        }
+    public static <T> boolean ObjectIsNotEmpty(T bean) {
+        return !(ObjectIsEmpty(bean));
     }
 }

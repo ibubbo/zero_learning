@@ -1,7 +1,7 @@
 package net.imain.controller.backend;
 
 import com.google.common.collect.Maps;
-import net.imain.common.Const;
+import net.imain.common.Constants;
 import net.imain.common.HandlerCheck;
 import net.imain.common.HandlerResult;
 import net.imain.pojo.Product;
@@ -10,6 +10,7 @@ import net.imain.service.ProductService;
 import net.imain.service.UserService;
 import net.imain.util.PropertiesUtil;
 import net.imain.vo.ProductDetailVo;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,8 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -84,7 +85,7 @@ public class ProductManageController {
             return handlerResult;
         }
         // The business logic
-        return productService.manageProductDatail(productId);
+        return productService.manageProductDetail(productId);
     }
 
     /**
@@ -122,9 +123,9 @@ public class ProductManageController {
 
     @RequestMapping(value = "upload.do", method = RequestMethod.POST)
     @ResponseBody
-    public HandlerResult upload(@RequestParam(value = "file", required = false) MultipartFile file,
+    public HandlerResult upload(@RequestParam(value = "upload_file", required = false) MultipartFile file,
                                 HttpServletRequest request, HttpSession session) {
-        // check user is null, and check role
+        // check user is null and check role
         HandlerResult handlerResult = HandlerCheck.checkUserIsPresentAndRole(session, userService);
         if (!handlerResult.isSuccess()) {
             return handlerResult;
@@ -133,10 +134,40 @@ public class ProductManageController {
         String localPath = request.getSession().getServletContext().getRealPath("upload");
         String imgPath = new DateTime().toString("/yyyy/MM/dd");
         String fileName = fileService.upload(file, imgPath, localPath);
-        String url = PropertiesUtil.getProperties(Const.Ftp.FTP_SERVER_HTTP_PREFIX_KEY) + imgPath + "/" + fileName;
+        String url = PropertiesUtil.getProperties(Constants.Ftp.FTP_SERVER_HTTP_PREFIX_KEY) + imgPath + "/" + fileName;
         Map fileMap = Maps.newHashMap();
         fileMap.put("uri", fileName);
         fileMap.put("url", url);
         return HandlerResult.success(fileMap);
+    }
+
+    @RequestMapping(value = "richtext_img_upload.do", method = RequestMethod.POST)
+    @ResponseBody
+    public Map richtextImgUpload(HttpSession session, HttpServletRequest request, HttpServletResponse response,
+                                           @RequestParam(value = "upload_file", required = false) MultipartFile file) {
+        Map map = Maps.newHashMap();
+        // check user is null and check role
+        HandlerResult handlerResult = HandlerCheck.checkUserIsPresentAndRole(session, userService);
+        if (!handlerResult.isSuccess()) {
+            map.put("success", false);
+            map.put("msg", handlerResult.getMsg());
+            return map;
+        }
+        String localPath = request.getSession().getServletContext().getRealPath("upload");
+        String imgPath = new DateTime().toString("/yyyy/MM/dd");
+        String fileName = fileService.upload(file, imgPath, localPath);
+        if (StringUtils.isBlank(fileName)) {
+            map.put("success", false);
+            map.put("msg", HandlerResult.error().getMsg());
+            return map;
+        }
+        String url = PropertiesUtil.getProperties(Constants.Ftp.FTP_SERVER_HTTP_PREFIX_KEY) + imgPath + "/" + fileName;
+
+        map.put("success", true);
+        map.put("msg", HandlerResult.success().getMsg());
+        map.put("file_path", url);
+        response.addHeader("Access-Control-Allow-Headers", "X-File-Name");
+
+        return map;
     }
 }

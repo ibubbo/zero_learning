@@ -1,5 +1,7 @@
 package net.imain.pojo;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -9,6 +11,7 @@ import java.util.Date;
  * @author uncle
  */
 public class Order {
+
     private Integer id;
 
     private Long orderNo;
@@ -55,7 +58,6 @@ public class Order {
     }
 
     public Order() {
-        super();
     }
 
     public Integer getId() {

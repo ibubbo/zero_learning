@@ -1,6 +1,6 @@
 package net.imain.controller.portal;
 
-import net.imain.common.Const;
+import net.imain.common.Constants;
 import net.imain.common.HandlerCheck;
 import net.imain.enums.HandlerEnum;
 import net.imain.common.HandlerResult;
@@ -29,13 +29,13 @@ public class UserController {
     /**
      * 用户登录
      */
-    @RequestMapping(value = "login.do", method = RequestMethod.POST)
+    @RequestMapping(value = "login.do", method = RequestMethod.GET)
     @ResponseBody
     public HandlerResult<UserInfoVo> login(String username,
                                            String password, HttpSession session) {
         HandlerResult<UserInfoVo> user = iUserService.login(username, password);
         if (user.isSuccess()) {
-            session.setAttribute(Const.CURRENT_USER, user.getData());
+            session.setAttribute(Constants.CURRENT_USER, user.getData());
         }
         return user;
     }
@@ -47,7 +47,7 @@ public class UserController {
     @ResponseBody
     public HandlerResult<String> logout(HttpSession session) {
         try {
-            session.removeAttribute(Const.CURRENT_USER);
+            session.removeAttribute(Constants.CURRENT_USER);
         } catch (Exception e) {
             return HandlerResult.error(HandlerEnum.SERVER_EXCEPTION.getMessage());
         }
@@ -155,7 +155,7 @@ public class UserController {
         if (!resultUser.isSuccess()) {
             return resultUser;
         }
-        session.setAttribute(Const.CURRENT_USER, resultUser);
+        session.setAttribute(Constants.CURRENT_USER, resultUser);
         return HandlerResult.success(HandlerEnum.SUCCESS.getMessage());
     }
 

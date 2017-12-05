@@ -28,10 +28,29 @@ public interface ProductMapper {
     /**
      * Search product
      *
-     * @param id product id
-     * @param name product name
+     * @param productId product id
+     * @param productName product name
      * @return product List
      */
     List<Product> selectByNameAndPrimaryKey(@Param(value = "productId") Integer productId,
                                             @Param(value = "productName") String productName);
+
+    List<Product> selectByNameAndCategoryIds(@Param(value = "productName") String productName,
+                                             @Param(value = "categoryIdList") List<Integer> categoryIdList);
+
+    /**
+     * 根据商品ID查询商品信息
+     *
+     * @param productIdList
+     * @return
+     */
+    List<Product> selectProductByProductIds(@Param(value = "productIdList") List<String> productIdList);
+
+    /**
+     * 批量增加商品库存
+     *
+     * @param productList
+     * @return
+     */
+    int updateProductStockList(@Param(value = "productList") List<Product> productList);
 }

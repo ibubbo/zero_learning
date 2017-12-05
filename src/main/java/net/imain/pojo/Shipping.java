@@ -8,28 +8,40 @@ import java.util.Date;
  * @author uncle
  */
 public class Shipping {
+    /** 收货ID.*/
     private Integer id;
 
+    /** 用户ID.*/
     private Integer userId;
 
+    /** 姓名.*/
     private String receiverName;
 
+    /** 固定电话.*/
     private String receiverPhone;
 
+    /** 移动电话.*/
     private String receiverMobile;
 
+    /** 省份.*/
     private String receiverProvince;
 
+    /** 城市.*/
     private String receiverCity;
 
+    /** 区/县.*/
     private String receiverDistrict;
 
+    /** 详细地址.*/
     private String receiverAddress;
 
+    /** 邮编.*/
     private String receiverZip;
 
+    /** 创建时间.*/
     private Date createTime;
 
+    /** 更新时间.*/
     private Date updateTime;
 
     public Shipping(Integer id, Integer userId, String receiverName, String receiverPhone, String receiverMobile, String receiverProvince, String receiverCity, String receiverDistrict, String receiverAddress, String receiverZip, Date createTime, Date updateTime) {

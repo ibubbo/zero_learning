@@ -33,7 +33,7 @@ public interface ProductService {
      * @param productId
      * @return
      */
-    HandlerResult<ProductDetailVo> manageProductDatail(Integer productId);
+    HandlerResult<ProductDetailVo> manageProductDetail(Integer productId);
 
     /**
      * Product pagination
@@ -54,4 +54,25 @@ public interface ProductService {
      * @return
      */
     HandlerResult<PageInfo> search(String productName, Integer productId, Integer pageNum, Integer pageSize);
+
+    /**
+     * portal product search
+     *
+     * @param productId
+     * @return
+     */
+    HandlerResult<Product> portalProductDetail(Integer productId);
+
+    /**
+     * search keyword and categoryId
+     *
+     * @param categoryId
+     * @param keyword
+     * @param orderBy
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    HandlerResult<PageInfo> portalList(Integer categoryId, String keyword,
+                                 String orderBy, Integer pageNum, Integer pageSize);
 }
