@@ -12,13 +12,17 @@ import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.utils.ZxingUtils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.imain.common.Constants;
 import net.imain.common.HandlerCheck;
+import net.imain.common.HandlerConverter;
 import net.imain.common.HandlerResult;
 import net.imain.dao.OrderItemMapper;
 import net.imain.dao.OrderMapper;
+import net.imain.dao.PayInfoMapper;
 import net.imain.enums.OrderEnum;
 import net.imain.pojo.Order;
 import net.imain.pojo.OrderItem;
+import net.imain.pojo.PayInfo;
 import net.imain.service.OrderService;
 import net.imain.util.BigDecimalUtil;
 import net.imain.util.FTPUtil;
@@ -36,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 在做这个的时候有个错，时间格式不对。。
+ *
  * @author: uncle
  * @apdateTime: 2017-12-04 17:08
  */
@@ -49,6 +55,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderItemMapper orderItemMapper;
+
+    @Autowired
+    private PayInfoMapper payInfoMapper;
 
     @Override
     public HandlerResult pay(Integer userId, Long orderNo, String path, String imgPath) {
@@ -105,7 +114,6 @@ public class OrderServiceImpl implements OrderService {
         // 商品明细列表，需填写购买商品详细信息，
         List<GoodsDetail> goodsDetailList = new ArrayList<>();
 
-        // TODO 这里只要根据用户ID查还是需要跟订单号一起查？如果这里是用userId和orderNo一起查的话，是不可能有一个列表存在的
         List<OrderItem> orderItemList = orderItemMapper.selectByUserIdAndOrderNo(userId, orderNo);
         for (OrderItem orderItem : orderItemList) {
             // 创建一个商品信息，参数含义分别为商品id（使用国标）、名称、单价（单位为分）、数量，如果需要添加商品类别，详见GoodsDetail
@@ -163,7 +171,8 @@ public class OrderServiceImpl implements OrderService {
                 String qrPath = String.format(path + "/qr-%s.png", response.getOutTradeNo());
                 String qrFileName = String.format("qr-%s.png", response.getOutTradeNo());
 
-                ZxingUtils.getQRCodeImge(response.getQrCode(), 256, qrPath);
+                // 将支付宝返回的二维码链接内容传给Zxing
+                ZxingUtils.getQRCodeImge(response.getQrCode(), 256, "C:\\Users\\Administrator\\Desktop\\曾小晨大杂烩\\images\\ok.png");
 
                 log.info("二维码的路径和名字：{}, {}", qrPath, qrFileName);
                 File targetFile = new File(path, qrFileName);
@@ -211,5 +220,63 @@ public class OrderServiceImpl implements OrderService {
             }
             log.info("body:" + response.getBody());
         }
+    }
+
+    @Override
+    public HandlerResult aliCallback(Map<String, String> params) {
+        // 订单号
+        Long outTradeNo = Long.valueOf(params.get("out_trade_no"));
+        // 支付宝交易号
+        String tradeNo = params.get("trade_no");
+        // 交易状态
+        String tradeStatus = params.get("trade_status");
+
+        Order order = orderMapper.selectByOrderNo(outTradeNo);
+        if (HandlerCheck.ObjectIsEmpty(order)) {
+            // 订单不存在
+            return HandlerResult.error("非快乐购商城的订单，回调忽略");
+        }
+        //
+        /**
+         * 订单状态:0-已取消，10-未付款，20-已付款，40-已发货，50-交易成功，60-交易关闭
+         * PAID = 20
+         */
+        if (order.getStatus() >= Constants.OrderStatusEnum.PAID.getCode()) {
+            // 订单状态码大于等于20说明已经交易过
+            return HandlerResult.success("支付宝重复调用");
+        }
+        if (Constants.AlipayCallback.TRADE_STATUS_TRADE_SUCCESS.equals(tradeStatus)) {
+            // 交易状态是成功的：1.更新交易时间，2.更新状态
+            order.setPaymentTime(HandlerConverter.strToDate(params.get("gmt_payment")));
+            order.setStatus(Constants.OrderStatusEnum.PAID.getCode());
+            orderMapper.updateByPrimaryKeySelective(order);
+        }
+
+        // 支付详情
+        PayInfo payInfo = new PayInfo();
+        payInfo.setUserId(order.getUserId());
+        payInfo.setOrderNo(order.getOrderNo());
+        payInfo.setPayPlatform(Constants.PayPlatformEnum.ALIPAY.getCode());
+        payInfo.setPlatformNumber(tradeNo);
+        payInfo.setPlatformStatus(tradeStatus);
+        payInfoMapper.insert(payInfo);
+
+        return HandlerResult.success();
+    }
+
+    /**
+     * 查询订单状态
+     */
+    @Override
+    public HandlerResult queryOrderPayStatus(Integer userId, Long orderNo) {
+        Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
+        if (HandlerCheck.ObjectIsEmpty(order)) {
+            return HandlerResult.error(OrderEnum.USER_HAS_NO_ORDER.getMessage());
+        }
+        // 判断支付状态
+        if (order.getStatus() >= Constants.OrderStatusEnum.PAID.getCode()) {
+            return HandlerResult.success();
+        }
+        return HandlerResult.error();
     }
 }

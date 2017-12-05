@@ -25,4 +25,12 @@ public interface OrderMapper {
      */
     Order selectByUserIdAndOrderNo(@Param("userId") Integer userId,
                                    @Param("orderNo") long orderNo);
+
+    /**
+     * 根据订单号查询订单
+     *
+     * @param orderNo
+     * @return
+     */
+    Order selectByOrderNo(Long orderNo);
 }
