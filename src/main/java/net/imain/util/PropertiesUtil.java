@@ -1,6 +1,5 @@
 package net.imain.util;
 
-import net.imain.common.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,14 +52,5 @@ public class PropertiesUtil {
         return Optional.of(properties)
                 .map(p -> p.getProperty(key.trim()))
                 .orElse(defaultValue);
-    }
-
-    public static void main(String[] args) {
-        String ftpIp = PropertiesUtil.getProperties("ftp.server.ip");
-        String ftpUser = PropertiesUtil.getProperties(Const.Ftp.FTP_USER_KEY);
-        String ftpPass = PropertiesUtil.getProperties(Const.Ftp.FTP_PASS);
-        System.out.println(ftpIp);
-        System.out.println(ftpUser);
-        System.out.println(ftpPass);
     }
 }

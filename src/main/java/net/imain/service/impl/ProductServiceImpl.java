@@ -3,7 +3,7 @@ package net.imain.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
-import net.imain.common.Const;
+import net.imain.common.Constants;
 import net.imain.common.HandlerCheck;
 import net.imain.common.HandlerConverter;
 import net.imain.common.HandlerResult;
@@ -165,7 +165,7 @@ public class ProductServiceImpl implements ProductService {
         if (HandlerCheck.ObjectIsEmpty(product)) {
             return HandlerResult.error(ProductEnum.PRODUCT_NOT_EXIST.getMessage());
         }
-        if (product.getStatus() != Const.ProductStatusEnum.SALE.getStatus()) {
+        if (product.getStatus() != Constants.ProductStatusEnum.SALE.getStatus()) {
             return HandlerResult.error(ProductEnum.PRODUCT_HAS_REMOVED.getMessage());
         }
         return HandlerResult.success(product);
@@ -209,7 +209,7 @@ public class ProductServiceImpl implements ProductService {
         }
         // Judgment orderBy whether is empty, if not empty set the sort conditions for paging plug-ins.
         if (StringUtils.isNotBlank(orderBy)) {
-            if (Const.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)) {
+            if (Constants.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)) {
                 String[] split = orderBy.split("_");
                 PageHelper.orderBy(split[0] + " " + split[1]);
             }

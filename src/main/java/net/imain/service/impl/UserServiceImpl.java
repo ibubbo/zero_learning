@@ -54,17 +54,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public HandlerResult<String> register(User user) {
         // 校验用户名
-        HandlerResult serverResponse = this.checkValid(user.getUsername(), Const.USERNAME);
+        HandlerResult serverResponse = this.checkValid(user.getUsername(), Constants.USERNAME);
         if (!serverResponse.isSuccess()) {
             return serverResponse;
         }
         // 校验邮箱
-        serverResponse = this.checkValid(user.getEmail(), Const.EMAIL);
+        serverResponse = this.checkValid(user.getEmail(), Constants.EMAIL);
         if (!serverResponse.isSuccess()) {
             return serverResponse;
         }
         // 补全用户信息
-        user.setRole(Const.Role.ROLE_CUSTOMER);
+        user.setRole(Constants.Role.ROLE_CUSTOMER);
         user.setPassword(MD5Util.MD5EncodeUtf8(user.getPassword()));
         // 判断是否成功添加
         Integer resultSum = userMapper.insert(user);
@@ -81,18 +81,18 @@ public class UserServiceImpl implements UserService {
             return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
         }
         // 校验 type 是否合法
-        if (!Const.USERNAME.equals(type) && !Const.EMAIL.equals(type)) {
+        if (!Constants.USERNAME.equals(type) && !Constants.EMAIL.equals(type)) {
             return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
         }
         // 如果是用户名
-        if (Const.USERNAME.equals(type)) {
+        if (Constants.USERNAME.equals(type)) {
             Integer resultCount = userMapper.checkUserName(str);
             if (resultCount > 0) {
                 return HandlerResult.error(UserEnum.USERNAME_EXIST.getMessage());
             }
         }
         // 如果是邮箱
-        if (Const.EMAIL.equals(type)) {
+        if (Constants.EMAIL.equals(type)) {
             Integer resultCount = userMapper.checkEmail(str);
             if (resultCount > 0) {
                 return HandlerResult.error(UserEnum.EMAIL_EXIST.getMessage());
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public HandlerResult<String> forgetGetQuestion(String username) {
         // 1. 判断用户名是否存在
-        HandlerResult<String> checkValid = this.checkValid(username, Const.USERNAME);
+        HandlerResult<String> checkValid = this.checkValid(username, Constants.USERNAME);
         if (checkValid.isSuccess()) {
             return HandlerResult.error(UserEnum.USERNAME_NOT_EXIST.getMessage());
         }
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
     public HandlerResult<String> forgetCheckAnswer(String username,
                                                    String question, String answer) {
         // 校验用户名
-        HandlerResult<String> checkValid = this.checkValid(username, Const.USERNAME);
+        HandlerResult<String> checkValid = this.checkValid(username, Constants.USERNAME);
         if (checkValid.isSuccess()) {
             return HandlerResult.error(UserEnum.USERNAME_NOT_EXIST.getMessage());
         }
@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
         }
         // 使用UUID生成Token并且加入本地缓存
         String token = UUID.randomUUID().toString();
-        TokenCache.setKey(Const.TOKEN_PREFIX + username, token);
+        TokenCache.setKey(Constants.TOKEN_PREFIX + username, token);
         return HandlerResult.success(token);
     }
 
@@ -143,11 +143,11 @@ public class UserServiceImpl implements UserService {
             return HandlerResult.error(HandlerEnum.ILLEGAL_ARGUMENT.getMessage());
         }
         // 校验用户名
-        HandlerResult<String> checkValid = this.checkValid(username, Const.USERNAME);
+        HandlerResult<String> checkValid = this.checkValid(username, Constants.USERNAME);
         if (checkValid.isSuccess()) {
             return HandlerResult.error(UserEnum.USERNAME_NOT_EXIST.getMessage());
         }
-        String tokenUser = TokenCache.getKey(Const.TOKEN_PREFIX + username);
+        String tokenUser = TokenCache.getKey(Constants.TOKEN_PREFIX + username);
         // 校验token
         if (StringUtils.isBlank(tokenUser)) {
             return HandlerResult.error(UserEnum.TOKEN_INEFFECTIVENESS.getMessage());
@@ -222,7 +222,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public HandlerResult checkAdminRole(UserInfoVo user) {
-        if (!(user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN)) {
+        if (!(user != null && user.getRole().intValue() == Constants.Role.ROLE_ADMIN)) {
             return HandlerResult.error();
         }
         return HandlerResult.success();

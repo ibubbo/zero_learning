@@ -59,7 +59,7 @@ public class HandlerCheck {
     public static HandlerResult checkUserIsPresent(HttpSession session) {
         // 判断用户是否登录
         Optional<UserInfoVo> userInfoVo =
-                Optional.ofNullable(((UserInfoVo) session.getAttribute(Const.CURRENT_USER)));
+                Optional.ofNullable(((UserInfoVo) session.getAttribute(Constants.CURRENT_USER)));
         if (!userInfoVo.isPresent()) {
             return HandlerResult.error(UserEnum.NEED_LOGIN.getCode(), UserEnum.NEED_LOGIN.getMessage());
         }

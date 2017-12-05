@@ -10,7 +10,7 @@ import java.util.Set;
  * @author: uncle
  * @apdateTime: 2017-11-16 18:56
  */
-public class Const {
+public class Constants {
     public static final String CURRENT_USER = "currentUser";
 
     public static final String EMAIL = "email";

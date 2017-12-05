@@ -2,7 +2,7 @@ package net.imain.service.impl;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import net.imain.common.Const;
+import net.imain.common.Constants;
 import net.imain.common.HandlerCheck;
 import net.imain.common.HandlerResult;
 import net.imain.dao.CartMapper;
@@ -74,7 +74,7 @@ public class CartServiceImpl implements CartService {
             }
             cart.setProductId(productId);
             cart.setUserId(userId);
-            cart.setChecked(Const.Cart.CHECKED);
+            cart.setChecked(Constants.Cart.CHECKED);
             cartMapper.insert(cart);
             int sum = stock - cart.getQuantity();
             product.setStock(sum < 0 ? -1 : sum);
@@ -165,15 +165,15 @@ public class CartServiceImpl implements CartService {
             if (isSelectAll) {
                 // 全选
                 for (Cart cartItem : cartList) {
-                    if (cartItem.getChecked() == Const.Cart.UNCHECKED) {
-                        cartItem.setChecked(Const.Cart.CHECKED);
+                    if (cartItem.getChecked() == Constants.Cart.UNCHECKED) {
+                        cartItem.setChecked(Constants.Cart.CHECKED);
                     }
                 }
             } else {
                 // 全不选
                 for (Cart cartItem : cartList) {
-                    if (cartItem.getChecked() == Const.Cart.CHECKED) {
-                        cartItem.setChecked(Const.Cart.UNCHECKED);
+                    if (cartItem.getChecked() == Constants.Cart.CHECKED) {
+                        cartItem.setChecked(Constants.Cart.UNCHECKED);
                     }
                 }
             }
@@ -190,10 +190,10 @@ public class CartServiceImpl implements CartService {
         if (HandlerCheck.ObjectIsNotEmpty(cart)) {
             // 选
             if (isSelect) {
-                cart.setChecked(Const.Cart.CHECKED);
+                cart.setChecked(Constants.Cart.CHECKED);
             } else {
                 // 不选
-                cart.setChecked(Const.Cart.UNCHECKED);
+                cart.setChecked(Constants.Cart.UNCHECKED);
             }
         }
         // 修改
@@ -253,11 +253,11 @@ public class CartServiceImpl implements CartService {
                     cartProductVo.setProductPrice(product.getPrice());
                     cartProductVo.setProductStatus(product.getStatus());
                     cartProductVo.setQuantity(cartItem.getQuantity());
-                    cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_SUCCESS);
+                    cartProductVo.setLimitQuantity(Constants.Cart.LIMIT_NUM_SUCCESS);
                     // 如果是 -1，表示商品库存已不足
                     if (product.getStock() == -1) {
                         cartProductVo.setProductStock(0);
-                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_FAIL);
+                        cartProductVo.setLimitQuantity(Constants.Cart.LIMIT_NUM_FAIL);
                         product.setStock(0);
                         productMapper.updateByPrimaryKeySelective(product);
                     }
@@ -267,14 +267,14 @@ public class CartServiceImpl implements CartService {
                     cartProductVo.setProductChecked(cartItem.getChecked());
                 }
                 // 计算商品总价
-                if (cartItem.getChecked() == Const.Cart.CHECKED) {
+                if (cartItem.getChecked() == Constants.Cart.CHECKED) {
                     productTotalPrice = BigDecimalUtil.add(productTotalPrice.doubleValue(),
                             cartProductVo.getProductTotalPrice().doubleValue());
                 }
                 cartProductVoList.add(cartProductVo);
             }
             // 拼接外层格式
-            cartResultVo.setImageHost(PropertiesUtil.getProperties(Const.Ftp.FTP_SERVER_HTTP_PREFIX_KEY));
+            cartResultVo.setImageHost(PropertiesUtil.getProperties(Constants.Ftp.FTP_SERVER_HTTP_PREFIX_KEY));
             cartResultVo.setCartProductVoList(cartProductVoList);
             cartResultVo.setAllChecked(getAllCheckedStatus(userId));
             cartResultVo.setCartTotalPrice(productTotalPrice);

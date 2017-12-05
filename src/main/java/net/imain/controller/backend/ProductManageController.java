@@ -1,7 +1,7 @@
 package net.imain.controller.backend;
 
 import com.google.common.collect.Maps;
-import net.imain.common.Const;
+import net.imain.common.Constants;
 import net.imain.common.HandlerCheck;
 import net.imain.common.HandlerResult;
 import net.imain.pojo.Product;
@@ -23,8 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -136,7 +134,7 @@ public class ProductManageController {
         String localPath = request.getSession().getServletContext().getRealPath("upload");
         String imgPath = new DateTime().toString("/yyyy/MM/dd");
         String fileName = fileService.upload(file, imgPath, localPath);
-        String url = PropertiesUtil.getProperties(Const.Ftp.FTP_SERVER_HTTP_PREFIX_KEY) + imgPath + "/" + fileName;
+        String url = PropertiesUtil.getProperties(Constants.Ftp.FTP_SERVER_HTTP_PREFIX_KEY) + imgPath + "/" + fileName;
         Map fileMap = Maps.newHashMap();
         fileMap.put("uri", fileName);
         fileMap.put("url", url);
@@ -163,7 +161,7 @@ public class ProductManageController {
             map.put("msg", HandlerResult.error().getMsg());
             return map;
         }
-        String url = PropertiesUtil.getProperties(Const.Ftp.FTP_SERVER_HTTP_PREFIX_KEY) + imgPath + "/" + fileName;
+        String url = PropertiesUtil.getProperties(Constants.Ftp.FTP_SERVER_HTTP_PREFIX_KEY) + imgPath + "/" + fileName;
 
         map.put("success", true);
         map.put("msg", HandlerResult.success().getMsg());

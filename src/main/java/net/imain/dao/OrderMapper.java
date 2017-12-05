@@ -1,6 +1,7 @@
 package net.imain.dao;
 
 import net.imain.pojo.Order;
+import org.apache.ibatis.annotations.Param;
 
 public interface OrderMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +15,14 @@ public interface OrderMapper {
     int updateByPrimaryKeySelective(Order record);
 
     int updateByPrimaryKey(Order record);
+
+    /**
+     * 根据用户ID查询订单号
+     *
+     * @param userId 用户ID
+     * @param orderNo 订单号
+     * @return 订单对象Order
+     */
+    Order selectByUserIdAndOrderNo(@Param("userId") Integer userId,
+                                   @Param("orderNo") long orderNo);
 }

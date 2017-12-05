@@ -41,7 +41,7 @@ public class HandlerConverter {
     public static ProductDetailVo productToProductDetailVo(Product product) {
         ProductDetailVo vo = new ProductDetailVo();
         BeanUtils.copyProperties(product, vo);
-        vo.setImageHost(PropertiesUtil.getProperties(Const.Ftp.FTP_SERVER_HTTP_PREFIX_KEY, Const.DEFAULT_VALUE));
+        vo.setImageHost(PropertiesUtil.getProperties(Constants.Ftp.FTP_SERVER_HTTP_PREFIX_KEY, Constants.DEFAULT_VALUE));
         vo.setCreateTime(dateToString(product.getCreateTime()));
         vo.setUpdateTime(dateToString(product.getUpdateTime()));
         return vo;
@@ -57,7 +57,7 @@ public class HandlerConverter {
         ProductListVo productListVo = new ProductListVo();
         BeanUtils.copyProperties(product, productListVo);
         // TODO. Whether this is really need
-        productListVo.setImageHost(PropertiesUtil.getProperties(Const.Ftp.FTP_SERVER_HTTP_PREFIX_KEY, Const.DEFAULT_VALUE));
+        productListVo.setImageHost(PropertiesUtil.getProperties(Constants.Ftp.FTP_SERVER_HTTP_PREFIX_KEY, Constants.DEFAULT_VALUE));
         return productListVo;
     }
 
@@ -75,7 +75,7 @@ public class HandlerConverter {
     }
 
     public static String dateToString(Date date) {
-        return dateToString(date, Const.TIME_FORMAT);
+        return dateToString(date, Constants.TIME_FORMAT);
     }
 
     /**
@@ -93,6 +93,6 @@ public class HandlerConverter {
     }
 
     public static Date strToDate(String dateTimeStr) {
-        return strToDate(dateTimeStr, Const.TIME_FORMAT);
+        return strToDate(dateTimeStr, Constants.TIME_FORMAT);
     }
 }

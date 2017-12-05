@@ -8,20 +8,29 @@ import java.util.Date;
  * @author uncle
  */
 public class PayInfo {
+
+    /** 支付ID.*/
     private Integer id;
 
+    /** 用户ID.*/
     private Integer userId;
 
+    /** 订单号.*/
     private Long orderNo;
 
+    /** 支付平台 1-支付宝 2-微信.*/
     private Integer payPlatform;
 
+    /** 支付宝支付流水号.*/
     private String platformNumber;
 
+    /** 支付宝支付状态.*/
     private String platformStatus;
 
+    /** 创建时间.*/
     private Date createTime;
 
+    /** 修改时间.*/
     private Date updateTime;
 
     public PayInfo(Integer id, Integer userId, Long orderNo, Integer payPlatform, String platformNumber, String platformStatus, Date createTime, Date updateTime) {
