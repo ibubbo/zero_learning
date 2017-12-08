@@ -10,18 +10,27 @@ public class BigDecimalUtil {
 
     private BigDecimalUtil() {}
 
+    /**
+     * 加
+     */
     public static BigDecimal add(double v1, double v2) {
         BigDecimal bigDecimal_v1 = new BigDecimal(Double.toString(v1));
         BigDecimal bigDecimal_v2 = new BigDecimal(Double.toString(v2));
         return bigDecimal_v1.add(bigDecimal_v2);
     }
 
+    /**
+     * 减
+     */
     public static BigDecimal subtract(double v1, double v2) {
         BigDecimal bigDecimal_v1 = new BigDecimal(Double.toString(v1));
         BigDecimal bigDecimal_v2 = new BigDecimal(Double.toString(v2));
         return bigDecimal_v1.subtract(bigDecimal_v2);
     }
 
+    /**
+     * 乘
+     */
     public static BigDecimal multiply(double v1, double v2) {
         BigDecimal bigDecimal_v1 = new BigDecimal(Double.toString(v1));
         BigDecimal bigDecimal_v2 = new BigDecimal(Double.toString(v2));

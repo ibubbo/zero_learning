@@ -24,8 +24,25 @@ public interface OrderItemMapper {
      * @param userId 用户ID
      * @param orderNo 订单号
      * @return 订单详情列表
-     * TODO 我觉得不是一个List。。订单号是唯一的，不可能有一个列表啊
      */
     List<OrderItem> selectByUserIdAndOrderNo(@Param("userId") Integer userId,
                                              @Param("orderNo") Long orderNo);
+
+
+    List<OrderItem> selectByOrderNo(@Param("orderNo") Long orderNo);
+
+    /**
+     * 批量插入订单详情
+     *
+     * @param orderItemList
+     */
+    void batchInsert(@Param("orderItemList") List<OrderItem> orderItemList);
+
+    /**
+     * 根据用户名查询订单详情
+     *
+     * @param userId
+     * @return
+     */
+    List<OrderItem> selectByUserId(@Param("userId") Integer userId);
 }

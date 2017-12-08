@@ -3,29 +3,39 @@ package net.imain.pojo;
 import java.util.Date;
 
 /**
- * 用户
+ * 用户表
  *
  * @author uncle
  */
 public class User {
+    /** 用户ID .*/
     private Integer id;
 
+    /** 用户名 .*/
     private String username;
 
+    /** 密码 .*/
     private String password;
 
+    /** 邮箱 .*/
     private String email;
 
+    /** 电话 .*/
     private String phone;
 
+    /** 找回密码问题 .*/
     private String question;
 
+    /** 找回密码答案 .*/
     private String answer;
 
+    /** 角色0-管理员,1-普通用户 .*/
     private Integer role;
 
+    /** 创建时间 .*/
     private Date createTime;
 
+    /** 更新时间 .*/
     private Date updateTime;
 
     public User(Integer id, String username, String password, String email, String phone, String question, String answer, Integer role, Date createTime, Date updateTime) {

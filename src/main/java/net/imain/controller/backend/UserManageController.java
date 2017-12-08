@@ -1,9 +1,13 @@
 package net.imain.controller.backend;
 
+import com.google.common.collect.Lists;
+import com.google.gson.reflect.TypeToken;
 import net.imain.common.Constants;
 import net.imain.common.HandlerResult;
 import net.imain.enums.UserEnum;
+import net.imain.pojo.User;
 import net.imain.service.UserService;
+import net.imain.util.GsonUtil;
 import net.imain.vo.UserInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author: uncle

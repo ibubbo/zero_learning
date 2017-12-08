@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -25,103 +26,66 @@ public class CartController {
 
     @RequestMapping(value = "add.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult add(Integer productId, Integer count, HttpSession session) {
-        // check user is null
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult add(Integer productId, Integer count, HttpServletRequest request) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return cartService.saveOrUpdate(userInfoVo.getId(), productId, count);
     }
 
     @RequestMapping(value = "list.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult list(HttpSession session) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult list(HttpServletRequest request) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return cartService.list(userInfoVo.getId());
     }
 
     @RequestMapping(value = "update.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult update(HttpSession session, Integer productId, Integer count) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult update(HttpServletRequest request, Integer productId, Integer count) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return cartService.update(userInfoVo.getId(), productId, count);
     }
 
     @RequestMapping(value = "delete_product.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult delete(HttpSession session, String productIds) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult delete(HttpServletRequest request, String productIds) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return cartService.delete(userInfoVo.getId(), productIds);
     }
 
     // 单选
     @RequestMapping(value = "select.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult select(HttpSession session, Integer productId) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult select(HttpServletRequest request, Integer productId) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return cartService.selectOrUnSelect(userInfoVo.getId(), productId, true);
     }
 
     @RequestMapping(value = "un_select.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult unSelect(HttpSession session, Integer productId) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult unSelect(HttpServletRequest request, Integer productId) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return cartService.selectOrUnSelect(userInfoVo.getId(), productId, false);
     }
 
     // 全选
     @RequestMapping(value = "select_all.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult selectAll(HttpSession session) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult selectAll(HttpServletRequest request) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return cartService.selectAllOrUnSelectAll(userInfoVo.getId(), true);
     }
 
     @RequestMapping(value = "un_select_all.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult unSelectAll(HttpSession session) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult unSelectAll(HttpServletRequest request) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return cartService.selectAllOrUnSelectAll(userInfoVo.getId(), false);
     }
 
     @RequestMapping(value = "get_cart_product_count.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult getCartProductCount(HttpSession session) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return HandlerResult.success(0);
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult getCartProductCount(HttpServletRequest request) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return cartService.getCartProductCount(userInfoVo.getId());
     }
 }

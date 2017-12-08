@@ -93,6 +93,8 @@ public class HandlerCheck {
         if (!optional.isPresent() || "".equals(bean)) {
             return true;
         }
+        /** 集合判断
+         */
         if (bean instanceof Collection) {
             if (((Collection) bean).size() <= 0) {
                 return true;

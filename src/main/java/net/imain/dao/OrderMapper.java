@@ -3,6 +3,8 @@ package net.imain.dao;
 import net.imain.pojo.Order;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface OrderMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -33,4 +35,19 @@ public interface OrderMapper {
      * @return
      */
     Order selectByOrderNo(Long orderNo);
+
+    /**
+     * 获取用户的所有订单
+     *
+     * @param userId
+     * @return
+     */
+    List<Order> selectByUserId(@Param("userId") Integer userId);
+
+    /**
+     * 查询所有的订单
+     *
+     * @return
+     */
+    List<Order> selectAll();
 }

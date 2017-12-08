@@ -24,9 +24,6 @@ import java.util.List;
 public class CategoryManageController {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private CategoryService categoryService;
 
     /**
@@ -35,12 +32,7 @@ public class CategoryManageController {
     @RequestMapping(value = "add_category.do", method = RequestMethod.GET)
     @ResponseBody
     public HandlerResult<String> addCategory(@RequestParam(value = "parentId", defaultValue = "0")
-                                                     Integer parentId, String categoryName, HttpSession session) {
-        // 校验
-        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, userService);
-        if (!resultCheck.isSuccess()) {
-            return resultCheck;
-        }
+                                                     Integer parentId, String categoryName) {
         // 处理分类逻辑
         return categoryService.addCategory(parentId, categoryName);
     }
@@ -50,14 +42,8 @@ public class CategoryManageController {
      */
     @RequestMapping(value = "set_category_name.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult<String> setCategoryName(HttpSession session,
-                                                 Integer categoryId, String categoryName) {
-        // 1.数据校验
-        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, userService);
-        if (!resultCheck.isSuccess()) {
-            return resultCheck;
-        }
-        // 2.更新分类名称
+    public HandlerResult<String> setCategoryName(Integer categoryId, String categoryName) {
+        // 1.更新分类名称
         return categoryService.setCategoryName(categoryId, categoryName);
     }
 
@@ -66,13 +52,8 @@ public class CategoryManageController {
      */
     @RequestMapping(value = "get_category.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult<List<Category>> getCategory(HttpSession session,
-                                                     @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
-        // 校验
-        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, userService);
-        if (!resultCheck.isSuccess()) {
-            return resultCheck;
-        }
+    public HandlerResult<List<Category>> getCategory(
+            @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
         // 获取当前分类的父类id，遍历所有此id的子节点id
         return categoryService.getCategory(categoryId);
     }
@@ -82,14 +63,9 @@ public class CategoryManageController {
      */
     @RequestMapping(value = "get_deep_category.do", method = RequestMethod.GET)
     @ResponseBody
-    public HandlerResult<List<Integer>> getCategoryAndDeepChildrenCategory(HttpSession session,
-                                                                           @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
-        // 校验
-        HandlerResult resultCheck = HandlerCheck.checkUserIsPresentAndRole(session, userService);
-        if (!resultCheck.isSuccess()) {
-            return resultCheck;
-        }
-        // 2.查询
+    public HandlerResult<List<Integer>> getCategoryAndDeepChildrenCategory(
+            @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
+        // 查询
         return categoryService.selectCategoryAndDeepChildrenCategory(categoryId);
     }
 }

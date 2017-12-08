@@ -1,7 +1,6 @@
 package net.imain.controller.portal;
 
 import com.github.pagehelper.PageInfo;
-import net.imain.common.HandlerCheck;
 import net.imain.common.HandlerResult;
 import net.imain.pojo.Shipping;
 import net.imain.service.ShippingService;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author: uncle
@@ -26,54 +25,34 @@ public class ShippingController {
     private ShippingService shippingService;
 
     @RequestMapping(value = "add.do", method = RequestMethod.GET)
-    public HandlerResult add(Shipping shipping, HttpSession session) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult add(Shipping shipping, HttpServletRequest request) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return shippingService.saveOrUpdate(userInfoVo.getId(), shipping);
     }
 
     @RequestMapping(value = "update.do", method = RequestMethod.GET)
-    public HandlerResult update(Shipping shipping, HttpSession session) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult update(Shipping shipping, HttpServletRequest request) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return shippingService.saveOrUpdate(userInfoVo.getId(), shipping);
     }
 
     @RequestMapping(value = "del.do", method = RequestMethod.GET)
-    public HandlerResult<String> del(HttpSession session, Integer shippingId) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult<String> del(HttpServletRequest request, Integer shippingId) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return shippingService.del(userInfoVo.getId(), shippingId);
     }
 
     @RequestMapping(value = "select.do", method = RequestMethod.GET)
-    public HandlerResult<Shipping> select(HttpSession session, Integer shippingId) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+    public HandlerResult<Shipping> select(HttpServletRequest request, Integer shippingId) {
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return shippingService.select(userInfoVo.getId(), shippingId);
     }
 
     @RequestMapping(value = "list.do", method = RequestMethod.GET)
-    public HandlerResult<PageInfo> list(HttpSession session,
+    public HandlerResult<PageInfo> list(HttpServletRequest request,
                                         @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                         @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-        HandlerResult handlerResult = HandlerCheck.checkUserIsPresent(session);
-        if (!handlerResult.isSuccess()) {
-            return handlerResult;
-        }
-        UserInfoVo userInfoVo = (UserInfoVo) handlerResult.getData();
+        UserInfoVo userInfoVo = (UserInfoVo) request.getAttribute("userInfo");
         return shippingService.list(userInfoVo.getId(), pageNum, pageSize);
     }
 }

@@ -9,7 +9,7 @@
 
 
 <form action="/manage/product/richtext_img_upload.do" method="post" enctype="multipart/form-data">
-    <input type="file" name="upload_file">
+    <input type="file" name="upload_file" accept="image/png,image/jpg">
     <input type="submit" value="上传">
 </form>
 </body>

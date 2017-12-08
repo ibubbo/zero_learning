@@ -36,7 +36,7 @@ public class DemoHbRunner extends AbsHbRunner {
         List<SysTradeInfo> sysTradeInfoList = HbQueue.poll();
 
         // 异常信息的采集，系统商自行完成
-        List<ExceptionInfo> exceptionInfoList = new ArrayList<ExceptionInfo>();
+        List<ExceptionInfo> exceptionInfoList = new ArrayList<>();
         //        exceptionInfoList.add(ExceptionInfo.HE_SCANER);
         //        exceptionInfoList.add(ExceptionInfo.HE_PRINTER);
         //        exceptionInfoList.add(ExceptionInfo.HE_OTHER);
