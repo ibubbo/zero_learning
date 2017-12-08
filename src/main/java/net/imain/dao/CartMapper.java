@@ -133,4 +133,19 @@ public interface CartMapper {
      * @return
      */
     int selectCartProductCount(@Param(value = "userId") Integer userId);
+
+    /**
+     * 根据用户ID得到用户的购物车，并且商品是选中状态
+     *
+     * @param userId 用户ID
+     * @return 商品列表
+     */
+    List<Cart> selectCheckedCartByUserId(Integer userId);
+
+    /**
+     * 根据用户ID删除购物车
+     *
+     * @param userId
+     */
+    void deleteCartByUserId(Integer userId);
 }

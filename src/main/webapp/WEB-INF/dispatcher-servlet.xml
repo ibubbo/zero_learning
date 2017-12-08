@@ -41,5 +41,27 @@
         <property name="defaultEncoding" value="UTF-8"></property>
     </bean>
 
+    <!-- 拦截器 -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/manage/category/**"/>
+            <mvc:mapping path="/manage/order/**"/>
+            <mvc:mapping path="/manage/product/**"/>
+            <bean class="net.imain.interceptor.backend.BackendInterceptor"/>
+        </mvc:interceptor>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/cart/**"/>
+            <mvc:mapping path="/shipping/**"/>
+            <mvc:mapping path="/order/query_order_pay_status.do"/>
+            <mvc:mapping path="/order/get_order_cart_product.do"/>
+            <mvc:mapping path="/order/create.do"/>
+            <mvc:mapping path="/order/cancel.do"/>
+            <mvc:mapping path="/order/detail.do"/>
+            <mvc:mapping path="/order/list.do"/>
+            <mvc:mapping path="/order/pay.do"/>
+            <bean class="net.imain.interceptor.portal.PortalInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 </beans>
